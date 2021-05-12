@@ -10,15 +10,10 @@ function onLoad()
     params = {
       click_function = "click_func",
       function_owner = self,
-      label          = "Select",
-      position       = {0, 1, 0},
-      rotation       = {0, 0, 0},
-      width          = 800,
-      height         = 400,
-      font_size      = 340,
-      color          = {0.5, 0.5, 0.5},
-      font_color     = {1, 1, 1},
-      tooltip        = "This text appears on mouseover.",
+      width          = 1000,
+      height         = 1400,
+      color          = {255, 255, 255, 0},
+      tooltip        = 'Click to select ' .. name .. ' as your investigator',
     }
     investigator.createButton(params)
   end
@@ -29,10 +24,10 @@ function click_func(obj, player_clicker_color, alt_click)
   investigatorsObj = getObjectFromGUID('02bfa6')
   if obj.getVar('selected') == true then 
     obj.setVar('selected', false)
-    obj.editButton({label="Select"})
+    obj.editButton({tooltip='Click to select ' .. obj.getName() .. ' as your investigator'})    
     else
       obj.setVar('selected', true)
-      obj.editButton({label="Unselect"})
+      obj.editButton({tooltip='Click to unselect ' .. obj.getName() .. ' as your investigator'})
   end
 
   investigatorsObj.setTable('investigator', { obj.getName(), player_clicker_color })

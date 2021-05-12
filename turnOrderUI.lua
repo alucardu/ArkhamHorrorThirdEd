@@ -15,7 +15,7 @@ function updateChildren()
         tag = "Button",
         attributes = {
             id=investigator[1],
-            onClick = "02bfa6/test",
+            onClick = "02bfa6/toggleTurn",
             fontSize = 20,
             color = investigator[2],
             interactable=true
@@ -31,7 +31,7 @@ function updateInvestigators()
     {
       tag="Panel",
       attributes={
-        height=#children * 100,
+        height=#children * 35,
         width=200,
         color="rgba(0,0,0,0.7)",
         rectAlignment="UpperRight",
@@ -49,7 +49,7 @@ function updateInvestigators()
   UI.setXmlTable(container)
 end
 
-function test(player, value, id)
+function toggleTurn(player, value, id)
   if has_value(children, id) then
     children[tonumber(childrenTableID)].attributes.interactable = false
     updateInvestigators()
