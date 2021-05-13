@@ -21,7 +21,7 @@ function onLoad()
 end
 
 function click_func(obj, player_clicker_color, alt_click)
-  investigatorsObj = getObjectFromGUID('02bfa6')
+  investigatorsObj = getObjectFromGUID('69581b')
   if obj.getVar('selected') == true then 
     obj.setVar('selected', false)
     obj.editButton({tooltip='Click to select ' .. obj.getName() .. ' as your investigator'})    
