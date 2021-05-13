@@ -107,7 +107,6 @@ function createButtons(tokens, font_color)
     saved_data = getObjectFromGUID(tokenGUID).script_state
 
     if saved_data ~= "" then
-      print(saved_data)
       local loaded_data = JSON.decode(saved_data)
       --Set up information off of loaded_data
       healthToken.setVar('value', loaded_data[1])
