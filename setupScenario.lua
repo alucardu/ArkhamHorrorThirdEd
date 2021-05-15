@@ -272,8 +272,11 @@ function buttonClick_place(obj)
             })
             item.setLock(entry.lock)
 
-            if (item.getTags()[2]) == 'Deck' then table.insert(neighborhoodDecks, item) end
+            if item.getTags()[2] == 'Deck' then table.insert(neighborhoodDecks, item) end
             if item.getTags()[2] == 'Neighborhood' then table.insert(neighborhoodTiles, item) end
+            if item.getTags()[1] == 'Anomalies' then anomaliesDeck = item end
+
+            print(anomaliesDeck)
 
             if item.getName() == 'Mythos Cup' then addButtonsToMythosCup(item.getGUID()) end
             if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
@@ -299,6 +302,9 @@ function buttonClick_place(obj)
   for i,o in ipairs(neighborhoodTiles) do
     local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
     o.addContextMenuItem('Draw encounter', func)
+
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodAnomaly', {player_color, i, o}) end
+    o.addContextMenuItem('Draw anomaly', func)
   end
 
   broadcastToAll("Objects Placed", {1,1,1})
