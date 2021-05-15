@@ -1,3 +1,5 @@
+discardDeck = nil
+
 function spreadDoom()
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')
