@@ -30,7 +30,7 @@ function click_func(obj, player_clicker_color, alt_click)
       obj.editButton({tooltip='Click to unselect ' .. obj.getName() .. ' as your investigator'})
   end
 
-  investigatorsObj.setTable('investigator', { obj.getName(), player_clicker_color })
+  investigatorsObj.setTable('investigator', { obj, player_clicker_color })
   investigatorsObj.call('updateChildren')
   investigatorsObj.call('updateInvestigators')
 end

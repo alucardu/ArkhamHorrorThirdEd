@@ -1,5 +1,7 @@
 investigator = {}
 children = {}
+monstersTable = {}
+monsters = {}
 childrenTableID = ''
 
 function updateChildren()
@@ -10,13 +12,32 @@ function updateChildren()
       {
         tag = "Button",
         attributes = {
-            id=investigator[1],
+            id=investigator[1].getName(),
             onClick = "69581b/toggleTurn",
             fontSize = 20,
             color = investigator[2],
             interactable=true
         },
-        value = investigator[1],
+        value = investigator[1].getName(),
+      }
+    )
+  end
+end
+
+function updateMonsters()
+  if has_value(monstersTable, monsters[1].getName()) then
+    table.remove(monstersTable, childrenTableID)
+  else
+    table.insert(monstersTable, 
+      {
+        tag = "Button",
+        attributes = {
+            id=monsters[1].getName(),
+            onClick = "69581b/toggleMonsterTurn",
+            fontSize = 20,
+            interactable=false
+        },
+        value = monsters[1].getName(),
       }
     )
   end
@@ -78,7 +99,6 @@ function updateInvestigators()
                 tag="Button",
                 attributes={
                   id="MonsterPhaseBtn",
-                  onClick = "69581b/finishMonsterPhase",
                   fontSize=20,
                   color="white",
                   interactable=false
@@ -86,6 +106,19 @@ function updateInvestigators()
                 value="Monster phase",
               }
             },
+          }
+        },
+        {
+          tag="Row",
+          attributes={
+            active=#monstersTable > 0,
+            preferredHeight=#monstersTable*35
+          },
+          children = {
+            {
+              tag="VerticalLayout",
+              children=monstersTable
+            }
           }
         },
         {
@@ -139,6 +172,22 @@ function updateInvestigators()
   UI.setXmlTable(container)
 end
 
+function toggleMonsterTurn(player, value, id)
+  if has_value(monstersTable, id) then
+    UI.setAttribute(monstersTable[tonumber(childrenTableID)].attributes.id, 'interactable', 'false')
+  end
+
+  Wait.frames(
+    function()
+      if finished(monstersTable, 'true') == true then
+        UI.setAttribute('MonsterPhaseBtn', 'interactable', 'false')
+        UI.setAttribute('EncounterPhaseBtn', 'interactable', 'true')
+      end
+    end,
+    1
+  )
+end
+
 function toggleTurn(player, value, id)
   if has_value(children, id) then
     UI.setAttribute(children[tonumber(childrenTableID)].attributes.id, 'interactable', 'false')
@@ -149,6 +198,10 @@ function toggleTurn(player, value, id)
       if finished(children, 'true') == true then
         UI.setAttribute('ActionPhaseBtn', 'interactable', 'false')
         UI.setAttribute('MonsterPhaseBtn', 'interactable', 'true')
+
+        for i, monster in ipairs(monstersTable) do
+          UI.setAttribute(monster.attributes.id, 'interactable', 'true')
+        end
       end
     end,
     1
@@ -156,7 +209,6 @@ function toggleTurn(player, value, id)
 end
 
 function finished(tab, val)
-
   for index, v in ipairs(tab) do
     if UI.getAttribute(v.attributes.id, "interactable") == val then
       return false
