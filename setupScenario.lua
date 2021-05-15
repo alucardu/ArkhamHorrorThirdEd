@@ -1,3 +1,15 @@
+
+neighborhoodTiles = {}
+neighborhoodDecks = {}
+
+headlines = getObjectFromGUID('f9b203')
+headlinesDeck = {}
+headlinesDeckPos = {}
+discardDeck = nil
+monsterDeck = ''
+eventDeck = ''
+posToken = -35
+drawnMythosTokenGuids = {}
 scenarios = {
   'd14543',
   '924d1a',
@@ -255,19 +267,123 @@ function buttonClick_place(obj)
         scenario.setRotationSmooth(entry.rot)
         scenario.setLock(entry.lock)
       else
-          --If obj is inside of the bag
-          for _, bagObj in ipairs(bagObjList) do
-              if bagObj.guid == guid then
-                local item = obj.takeObject({
-                    guid=guid, position=entry.pos, rotation=entry.rot,
-                })
-                item.setLock(entry.lock)
-                break
-              end
+        --If obj is inside of the bag
+        for _, bagObj in ipairs(bagObjList) do
+          if bagObj.guid == guid then
+            local item = obj.takeObject({
+                guid=guid, position=entry.pos, rotation=entry.rot,
+            })
+            item.setLock(entry.lock)
+
+            if (item.getTags()[2]) == 'Deck' then table.insert(neighborhoodDecks, item) end
+            if item.getTags()[2] == 'Neighborhood' then table.insert(neighborhoodTiles, item) end
+
+            if item.getName() == 'Mythos Cup' then addButtonsToMythosCup(item.getGUID()) end
+            if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
+            if item.getName() == 'Event' then eventDeck = getObjectFromGUID(item.getGUID()) end
+            if item.getName() == 'Headlines' then headlines = getObjectFromGUID(item.getGUID()) end
+
+            break
           end
+        end
       end
   end
+  Wait.frames(
+    function()
+      local headlines = obj.takeObject({
+        position={20, 20, 20},
+      })
+      setHeadlines(headlines.getDescription())
+      headlines.destroyObject()
+    end,
+    24
+  )
+
+  for i,o in ipairs(neighborhoodTiles) do
+    local func = function(player_color) drawNeighborhoodEncounter(player_color, i, o) end
+    o.addContextMenuItem('Draw encounter', func)
+  end
+
   broadcastToAll("Objects Placed", {1,1,1})
+end
+
+function setHeadlines(amount)
+  headlinesDeckPos = headlines.getPosition()
+  headlinesDeckPos = {x = headlinesDeckPos.x - 0.2, y = headlinesDeckPos.y, z = headlinesDeckPos.z - 15}
+  headlines.shuffle()
+  headlines.shuffle()
+  headlines.shuffle()
+
+  headlinesDeck = headlines.cut(tonumber(amount))
+  
+  Wait.frames(
+    function()
+      headlinesDeck = headlinesDeck[2]
+      headlinesDeck.setPositionSmooth(
+        headlinesDeckPos
+      )
+      headlinesDeck.setRotationSmooth(
+        {180, 0, 0}
+      )
+    end,
+    64
+  )
+end 
+
+function addButtonsToMythosCup(guid)
+  cup = getObjectFromGUID(guid)
+
+  params = {
+    label="Draw Mythos Token",
+    click_function="draw_mythos_token",
+    function_owner=self,
+    position={0,0.3,-2},
+    rotation={0,180,0},
+    height=350,
+    width=800,
+    font_size=250,
+    color={0,0,0},
+    font_color={1,1,1}
+  }
+
+  cup.createButton(params)
+end
+
+function draw_mythos_token(obj)
+
+  posToken = posToken + 0.4
+
+  if obj.getQuantity() == 0 then
+    posToken = -35
+    for i, tokenGuid in ipairs(drawnMythosTokenGuids) do
+      local token = getObjectFromGUID(tokenGuid)
+      if token ~= nill then
+        obj.putObject(token)
+      end
+    end
+    drawnMythosTokenGuids = {}
+    obj.shuffle()
+    obj.shuffle()
+    obj.shuffle()
+    obj.shuffle()
+    return
+  end
+
+  local takenObject = obj.takeObject({
+    position = {x = posToken, y = 2, z = 0},
+  })
+
+  table.insert(drawnMythosTokenGuids, takenObject.getGUID())
+
+  if takenObject.getName() == 'Spread Doom' then spreadDoom() end
+  if takenObject.getName() == 'Read Headline' then readHeadline() end
+  if takenObject.getName() == 'Blank' then blank() end
+  if takenObject.getName() == 'Spawn Monster' then spawnMonster() end
+  if takenObject.getName() == 'Spawn Clue' then spawnClue() end
+  if takenObject.getName() == 'Gate Burst' then gateBurst() end
+  if takenObject.getName() == 'Reckoning' then reckoning() end
+  if takenObject.getName() == 'Spread Terror' then spreadTerror() end
+
 end
 
 --Recalls objects to bag from table
@@ -335,4 +451,280 @@ function updateSave(obj)
   local data_to_save = {["ml"]=memoryList}
   saved_data = JSON.encode(data_to_save)
   obj.script_state = saved_data
+end
+
+function shuffleFn(deck) 
+  deck.shuffle()
+
+  Wait.frames(
+    function()
+      deck.shuffle()
+    end,
+    32
+  )
+
+  Wait.frames(
+    function()
+      deck.shuffle()
+    end,
+    64
+  )
+
+  Wait.frames(
+    function()
+      selection[2].setPositionSmooth({x = neighborhoodDeckPos.x, y=neighborhoodDeckPos.y + 5, z=neighborhoodDeckPos.z}) 
+    end,
+    96
+  )
+end
+
+function shuffleDeck(deck, iteration)
+  local frames = 0
+  for i = iteration , 1 ,-1 do
+    frames = frames + 32
+    Wait.frames(
+    function()
+      deck.shuffle()
+    end,
+    frames
+  )
+  end
+end
+
+function gateBurst()
+  eventDeckPos = eventDeck.getPosition()
+  doomPos = {x = eventDeckPos.x + 4, y = eventDeckPos.y, z = eventDeckPos.z}
+
+  if discardDeck == nil then
+    local takenObject = eventDeck.takeObject({
+      position = doomPos
+    })
+    broadcastToAll('Add doom to ' .. takenObject.getTags()[1], {1,0,0})
+    placeDoomTokens(takenObject)
+    Wait.frames(
+      function()
+        eventDeck.putObject(takenObject)
+      end, 64
+    )
+    return
+  end
+  
+  local takenObject = eventDeck.takeObject({
+    position = doomPos
+  })
+
+  takenObject.flip()
+  takenObject.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})
+
+  local flipCard = function() discardDeck = discardDeck.putObject(takenObject) someFn(discardDeck, 4) end
+  moveWatch = function() return not takenObject.isSmoothMoving() end
+  Wait.condition(flipCard, moveWatch)
+
+  placeDoomTokens(takenObject)
+end
+
+function placeDoomTokens(takenObject)
+  broadcastToAll('Gate burst!', {1,0,0})
+  broadcastToAll('Add doom to each part of ' .. takenObject.getTags()[1], {1,0,0})
+
+  for i, deck in ipairs(neighborhoodTiles) do
+    if takenObject.getTags()[1] == deck.getTags()[1] then
+      neighborhoodPosition = deck.getPosition()
+    end
+  end
+
+  -- doom token
+  for i = 3 , 1, -1 do
+    getObjectFromGUID('f807c7').takeObject({
+      position={x=neighborhoodPosition.x, y=neighborhoodPosition.y + 5, z=neighborhoodPosition.z}
+    })
+  end
+end
+
+function someFn(discardDeck, shuffleIterations)
+  local frames = 32
+
+  -- Wait for decks to be merged then flip the deck
+  Wait.frames(
+    function()
+      discardDeck.flip()
+
+      -- Wait for deck to flip
+      Wait.frames(
+        function()
+          shuffleDeck(discardDeck, shuffleIterations)
+
+          -- Wait for deck to be shuffled
+          Wait.frames(
+            function()
+              eventDeck.putObject(discardDeck)
+            end, frames * shuffleIterations
+          )
+        end, 32
+      )
+    end, 32
+  )
+end
+
+function blank()
+  broadcastToAll('Nothing happens!', {0, 1, 0})
+end
+
+function spreadDoom()
+  eventDeckPos = eventDeck.getPosition()
+  doomPos = {x = eventDeckPos.x + 4, y = eventDeckPos.y, z = eventDeckPos.z}
+  
+  local takenObject = eventDeck.takeObject({
+    index = eventDeck.getQuantity() - 1,
+  })
+
+  if discardDeck == nil then
+    takenObject.flip()
+    discardDeck = takenObject
+    discardDeck.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})
+    else
+      takenObject.flip()
+      takenObject.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})
+
+      local flipCard = function() discardDeck = discardDeck.putObject(takenObject) end
+      moveWatch = function() return not takenObject.isSmoothMoving() end
+      Wait.condition(flipCard, moveWatch)
+  end
+
+  for i, deck in ipairs(neighborhoodTiles) do
+    if takenObject.getTags()[1] == deck.getTags()[1] then
+      neighborhoodPosition = deck.getPosition()
+    end
+  end
+
+  -- doomtoken
+  getObjectFromGUID('f807c7').takeObject({
+    position={x=neighborhoodPosition.x, y=neighborhoodPosition.y + 5, z=neighborhoodPosition.z}
+  })
+
+  broadcastToAll('Add doom to ' .. takenObject.getTags()[1], {1,0,0})
+end
+
+function readHeadline()
+
+  if headlinesDeck == null then
+    if lastCard == nill then
+      broadcastToAll("Add Doom", {1,0,0})
+      getObjectFromGUID('f807c7').takeObject({
+        position={x = headlinesDeckPos.x + 3, y = headlinesDeckPos.y, z = headlinesDeckPos.z }
+      })
+      return
+    end
+    lastCard.setPositionSmooth(
+      {x = headlinesDeckPos.x + 3, y = headlinesDeckPos.y, z = headlinesDeckPos.z }
+    )
+
+    local flipCard = function() lastCard.flip() lastCard = nill end
+    moveWatch = function() return not lastCard.isSmoothMoving() end
+    Wait.condition(flipCard, moveWatch)
+    return
+  end
+
+  if headlinesDeck.remainder == nill then
+    headlineCard = headlinesDeck.takeObject({
+      position={x = headlinesDeckPos.x + 3, y = headlinesDeckPos.y, z = headlinesDeckPos.z},
+      callback_function = function()
+        headlineCard.flip()
+      end
+    })
+  end
+
+  if headlinesDeck.remainder ~= nill then
+    lastCard = headlinesDeck.remainder
+  end
+  
+end
+
+function spawnClue()
+  deckPos = eventDeck.getPosition()
+  pos = {x = deckPos.x, y = deckPos.y, z = deckPos.z + - 5}
+  
+  local takenObject = eventDeck.takeObject({
+    position = pos
+  })
+
+  for i, deck in ipairs(neighborhoodDecks) do
+    if takenObject.getTags()[1] == deck.getTags()[1] then
+      neighborhoodDeck = deck
+    end
+  end
+
+  neighborhoodDeckPos = neighborhoodDeck.getPosition()
+
+  selection = neighborhoodDeck.cut(2)
+  Wait.frames(
+    function()
+      selection[2].setPositionSmooth(
+        pos
+      )
+      selection[2].setRotationSmooth(
+        {180, 0, 0}
+      )
+      local shuffle = function() Wait.frames(function() shuffleFn(selection[2]) end, 64) end
+      moveWatch = function() return not selection[2].isSmoothMoving() end
+      Wait.condition(shuffle, moveWatch)
+    end,
+    64
+  )
+
+  for i, tile in ipairs(neighborhoodTiles) do
+    if takenObject.getTags()[1] == tile.getTags()[1] then
+      neighborhoodPosition = tile.getPosition()
+    end
+  end
+
+   -- cluetoken
+   getObjectFromGUID('c896e0').takeObject({
+    position={x=neighborhoodPosition.x, y=neighborhoodPosition.y + 5, z=neighborhoodPosition.z}
+  })
+end
+
+function spawnMonster()
+  monsterDeckPos = monsterDeck.getPosition()
+
+  spawnedMonster = monsterDeck.takeObject({
+    position = {x = monsterDeckPos.x + 2.5, y = monsterDeckPos.y, z = monsterDeckPos.z},
+    index=monsterDeck.getQuantity() - 1
+  })
+  
+  investigatorsObj = getObjectFromGUID('69581b')
+  investigatorsObj.setTable('monsters', { spawnedMonster })
+  investigatorsObj.call('updateMonsters')
+  investigatorsObj.call('updateInvestigators')
+
+  for i,o in ipairs(investigatorsObj.getTable('monsters')) do
+    local func = function(player_color) defeatMonster(player_color, i, o) end
+    o.addContextMenuItem('Defeat Monstes', func)
+  end
+
+end
+
+function defeatMonster(player_color, i, o)
+  investigatorsObj.call('updateMonsters')
+  investigatorsObj.call('updateInvestigators')
+  spawnedMonster.setPositionSmooth({x=monsterDeckPos.x, y=monsterDeckPos.y + 5, z=monsterDeckPos.z})
+  broadcastToAll(player_color .. ' has defeated ' .. o.getName(), {0, 1, 0})
+end
+
+function spreadTerror()
+end
+
+function reckoning()
+  broadcastToAll('Check reckoning effects!', {1, 0, 0})
+end
+
+function drawNeighborhoodEncounter(player_color, i, o)
+  
+  for i, deck in ipairs(neighborhoodDecks) do
+    if o.getTags()[1] == deck.getTags()[1] then
+      deck.takeObject().deal(1, player_color)
+      broadcastToAll('Dealt encounter card to ' .. player_color, {0,1,0})
+    end
+  end
+    
 end
