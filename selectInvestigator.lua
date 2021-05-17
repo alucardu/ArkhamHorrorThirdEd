@@ -1,4 +1,6 @@
 selected = true
+investigatorsObj = getObjectFromGUID('69581b')
+selectedInvestigators = {}
 investigators = {
   '5244f1', '194c1c', 'ff211a'
 }
@@ -21,7 +23,6 @@ function onLoad()
 end
 
 function click_func(obj, player_clicker_color, alt_click)
-  investigatorsObj = getObjectFromGUID('69581b')
   if obj.getVar('selected') == true then 
     obj.setVar('selected', false)
     obj.editButton({tooltip='Click to select ' .. obj.getName() .. ' as your investigator'})    
@@ -30,7 +31,15 @@ function click_func(obj, player_clicker_color, alt_click)
       obj.editButton({tooltip='Click to unselect ' .. obj.getName() .. ' as your investigator'})
   end
 
+  table.insert(selectedInvestigators, obj)
+
   investigatorsObj.setTable('investigator', { obj, player_clicker_color })
   investigatorsObj.call('updateChildren')
   investigatorsObj.call('updateInvestigators')
+end
+
+function removeInvestigatorsSelectButtons()
+  for i, investigator in ipairs(selectedInvestigators) do
+    investigator.clearButtons()
+  end
 end
