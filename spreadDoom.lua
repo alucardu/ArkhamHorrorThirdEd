@@ -15,7 +15,6 @@ function spreadDoom()
     takenObject.flip()
     discardDeck = takenObject
     discardDeck.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})
-    print(discardDeck)
     else
       takenObject.flip()
       takenObject.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})

@@ -4,46 +4,7 @@ monstersTable = {}
 monsters = {}
 childrenTableID = ''
 
-function updateChildren()
-  if has_value(children, investigator[1]) then
-    table.remove(children, childrenTableID)
-  else
-    table.insert(children, 
-      {
-        tag = "Button",
-        attributes = {
-            id=investigator[1].getName(),
-            onClick = "69581b/toggleTurn",
-            fontSize = 20,
-            color = investigator[2],
-            interactable=true
-        },
-        value = investigator[1].getName(),
-      }
-    )
-  end
-end
-
-function updateMonsters()
-  if has_value(monstersTable, monsters[1].getName()) then
-    table.remove(monstersTable, childrenTableID)
-  else
-    table.insert(monstersTable, 
-      {
-        tag = "Button",
-        attributes = {
-            id=monsters[1].getName(),
-            onClick = "69581b/toggleMonsterTurn",
-            fontSize = 20,
-            interactable=false
-        },
-        value = monsters[1].getName(),
-      }
-    )
-  end
-end
-
-function updateInvestigators()
+function onLoad()
   local container = {
     {
       tag="TableLayout",
@@ -78,6 +39,8 @@ function updateInvestigators()
         {
           tag="Row",
           attributes={
+            id="investigators",
+            active=#children > 0,
             preferredHeight=#children*35
           },
           children = {
@@ -111,8 +74,9 @@ function updateInvestigators()
         {
           tag="Row",
           attributes={
+            id="monsters",
             active=#monstersTable > 0,
-            preferredHeight=#monstersTable*35
+            preferredHeight=#monstersTable * 35
           },
           children = {
             {
@@ -168,18 +132,97 @@ function updateInvestigators()
       }
     }
   }
-
   UI.setXmlTable(container)
 end
 
+function updateChildren()
+  if has_value(children, investigator[1]) then
+    table.remove(children, childrenTableID)
+  else
+    table.insert(children, 
+      {
+        tag = "Button",
+        attributes = {
+          id=investigator[1].getName(),
+          onClick = "69581b/toggleTurn",
+          fontSize = 20,
+          color = investigator[2],
+          interactable=true
+        },
+        value = investigator[1].getName(),
+      }
+    )
+  end
+end
+
+function updateMonsters(state)
+  -- make copy of current monster table
+  phaseTracker = UI.getXmlTable()
+  monsterContainer = phaseTracker[1].children[4].children[1].children
+
+  -- add monster if spawned
+  if state[1] == 'spawned' then
+    table.insert(monsterContainer,
+    {
+      tag = "Button",
+      attributes = {
+        id=state[2].getGUID(),
+        onClick = "69581b/toggleMonsterTurn",
+        fontSize = 20,
+        interactable=false
+      },
+      value = state[2].getName(),
+    })
+  end
+
+  -- remove monster if defeated
+  if state[1] == 'defeated' then
+    for i, monster in ipairs(monsterContainer) do
+      if monster.attributes.id == state[2].getGUID() then
+        table.remove(monsterContainer, i)
+      end
+    end
+
+    -- advance to encounter phase if all monsters are defeated or exausted
+    if finished(monsterContainer, 'true') == true and UI.getAttribute('MonsterPhaseBtn', 'interactable') == 'true' then
+      broadcastToAll('All monsters defeated or exausted', {0, 1, 0})
+      UI.setAttribute('MonsterPhaseBtn', 'interactable', 'false')
+      UI.setAttribute('EncounterPhaseBtn', 'interactable', 'true')
+    end
+  end  
+
+  -- update monster attributes
+  if #monsterContainer > 0 then
+    UI.setAttribute('monsters', 'active', 'true')  
+    UI.setAttribute('monsters', 'preferredHeight', #phaseTracker[1].children[4].children[1].children*35)
+    else
+      UI.setAttribute('monsters', 'active', 'false')
+  end
+
+  -- update ui table
+  UI.setXmlTable(phaseTracker)
+end
+
+function updateInvestigators()
+  if (#children > 0) then
+    UI.setAttribute('investigators', 'active', 'true')
+  end
+  UI.setAttribute('investigators', 'preferredHeight', #children*35)
+  phaseTracker = UI.getXmlTable()
+  phaseTracker[1].children[2].children[1].children = children
+  UI.setXmlTable(phaseTracker)
+end
+
 function toggleMonsterTurn(player, value, id)
-  if has_value(monstersTable, id) then
-    UI.setAttribute(monstersTable[tonumber(childrenTableID)].attributes.id, 'interactable', 'false')
+  for i, monster in ipairs(monsterContainer) do
+    if monster.attributes.id == id then
+      UI.setAttribute(monster.attributes.id, "interactable", 'false')
+    end
   end
 
   Wait.frames(
     function()
-      if finished(monstersTable, 'true') == true then
+      if finished(monsterContainer, 'true') == true then
         UI.setAttribute('MonsterPhaseBtn', 'interactable', 'false')
         UI.setAttribute('EncounterPhaseBtn', 'interactable', 'true')
       end
@@ -196,26 +239,28 @@ function toggleTurn(player, value, id)
   Wait.frames(
     function()
       if finished(children, 'true') == true then
-        UI.setAttribute('ActionPhaseBtn', 'interactable', 'false')
-        UI.setAttribute('MonsterPhaseBtn', 'interactable', 'true')
 
-        for i, monster in ipairs(monstersTable) do
-          UI.setAttribute(monster.attributes.id, 'interactable', 'true')
+        if monsterContainer ~= nil then
+          for i, monster in ipairs(monsterContainer) do
+            UI.setAttribute(monster.attributes.id, "interactable", 'true')
+          end          
+        end
+
+        UI.setAttribute('ActionPhaseBtn', 'interactable', 'false')
+
+        if monsterContainer ~= nil and #monsterContainer > 0 then
+          UI.setAttribute('MonsterPhaseBtn', 'interactable', 'true')
+          for i, monster in ipairs(monstersTable) do
+            UI.setAttribute(monster.attributes.id, 'interactable', 'true')
+          end
+          else
+            broadcastToAll('No monsters in play. Going to the encounter phase!', {0, 1, 0})
+            finishMonsterPhase()
         end
       end
     end,
     1
   )
-end
-
-function finished(tab, val)
-  for index, v in ipairs(tab) do
-    if UI.getAttribute(v.attributes.id, "interactable") == val then
-      return false
-    end
-  end
-
-  return true
 end
 
 function has_value (tab, val)
@@ -246,4 +291,18 @@ function finishMythosPhase()
   for index, value in ipairs(children) do
     UI.setAttribute(value.attributes.id, 'interactable', 'true')
   end
+end
+
+function finished(tab, val)
+  if #tab == 0 then
+    return true
+  end
+
+  for index, v in ipairs(tab) do
+    if UI.getAttribute(v.attributes.id, "interactable") == val then
+      return false
+    end
+  end
+
+  return true
 end
