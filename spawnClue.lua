@@ -1,11 +1,26 @@
-function spawnClue()
+function spawnClue(amount)
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')
   neighborhoodDecks = getObjectFromGUID('3e1179').getTable('neighborhoodDecks')
-  
   deckPos = eventDeck.getPosition()
   pos = {x = deckPos.x, y = deckPos.y, z = deckPos.z + - 5}
-  
+  frames = 0
+
+  if amount ~= nill then
+    for i = amount, 1, -1 do
+      Wait.frames(
+        function()
+          someFunction()
+        end, frames
+      )
+      frames = frames + 512
+    end
+    else 
+      someFunction()
+  end
+end
+
+function someFunction()
   local takenObject = eventDeck.takeObject({
     position = pos
   })
