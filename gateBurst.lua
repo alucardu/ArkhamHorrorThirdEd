@@ -6,8 +6,6 @@ function gateBurst()
   doomPos = {x = eventDeckPos.x + 4, y = eventDeckPos.y, z = eventDeckPos.z}
 
   discardDeck = getObjectFromGUID('077454').getVar('discardDeck')
-
-  print(discardDeck)
   
   if discardDeck == nil then
     local takenObject = eventDeck.takeObject({
