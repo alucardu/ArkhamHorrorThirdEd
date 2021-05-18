@@ -4,6 +4,14 @@ monstersTable = {}
 monsters = {}
 childrenTableID = ''
 
+function onObjectSearchStart()
+  UI.setAttribute('top', 'active', 'false')
+end
+
+function onObjectSearchEnd()
+  UI.setAttribute('top', 'active', 'true')
+end
+
 function onLoad()
   local container = {
     {
@@ -13,8 +21,8 @@ function onLoad()
         width=200,
         height=200,
         color="rgba(0,0,0,0.7)",
-        rectAlignment="UpperLeft",
-        offsetXY="-0, 0",
+        rectAlignment="UpperRight",
+        offsetXY="-200, 0"
       },
       children={
         {
@@ -203,6 +211,7 @@ function updateInvestigators()
             value="X",
             attributes={
               flexibleWidth='0.2',
+              interactable=true,
               id='remove' .. investigator[1].getName(),
               onClick = "69581b/toggleRemoveButton",
             }
@@ -273,11 +282,13 @@ function removeMonster(player, value, id)
 end
 
 function removeInvestigator(player, value, id)
+  phaseTracker = UI.getXmlTable()
+  children = phaseTracker[1].children[2].children
+
   id = id:sub(7)
   if has_value(children, id) then
     table.remove(children, childrenTableID)
   end
-  phaseTracker[1].children[2].children = children
   
   Wait.frames(
     function()
@@ -313,7 +324,6 @@ end
 function toggleTurn(player, value, id)
   if has_value(children, id) then
     UI.setAttribute(children[tonumber(childrenTableID)].children[1].attributes.id, 'interactable', 'false')
-    UI.setAttribute('remove' .. children[tonumber(childrenTableID)].children[1].attributes.id, 'interactable', 'false')
   end
 
   Wait.frames(
