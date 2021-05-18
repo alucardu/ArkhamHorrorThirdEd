@@ -7,127 +7,82 @@ childrenTableID = ''
 function onLoad()
   local container = {
     {
-      tag="TableLayout",
+      tag="VerticalLayout",
       attributes={
-        autoCalculateHeight=true,
+        id="top",
         width=200,
+        height=200,
         color="rgba(0,0,0,0.7)",
-        rectAlignment="UpperRight",
-        offsetXY="-200, 0"
+        rectAlignment="UpperLeft",
+        offsetXY="-0, 0",
       },
       children={
         {
-          tag="Row",
+          tag="Button",
+          value="Action phase",
           attributes={
+            interactable=false,
+            id="ActionPhaseBtn",
+            fontSize=20,
+            color="white",
             preferredHeight=50
           },
-          children = {
-            {
-              tag="Cell",
-              children={
-                tag="Button",
-                attributes={
-                  id="ActionPhaseBtn",
-                  fontSize=20,
-                  color="white",
-                },
-                value="Action phase",
-              }
-            }
-          }
         },
         {
-          tag="Row",
+          tag="VerticalLayout",
           attributes={
             id="investigators",
-            active=#children > 0,
-            preferredHeight=#children*35
+            active=false
           },
-          children = {
-            {
-              tag="VerticalLayout",
-              children=children
-            }
-          }
+          children = children
         },
         {
-          tag="Row",
+          tag="Button",
           attributes={
+            id="MonsterPhaseBtn",
+            fontSize=20,
+            color="white",
+            interactable=false,
             preferredHeight=50
           },
-          children = {
-            {
-              tag="Cell",
-              children={
-                tag="Button",
-                attributes={
-                  id="MonsterPhaseBtn",
-                  fontSize=20,
-                  color="white",
-                  interactable=false
-                },
-                value="Monster phase",
-              }
-            },
-          }
+          value="Monster phase",
         },
+        -- {
+        --   tag="HorizontalLayout",
+        --   attributes={
+        --     active=#monstersTable > 0,
+        --     prefferedHeight=35
+        --   },
+        --   children = {
+        --     {
+        --       tag="VerticalLayout",
+        --       children=monstersTable
+        --     }
+        --   }
+        -- },
         {
-          tag="Row",
+          tag="Button",
           attributes={
-            id="monsters",
-            active=#monstersTable > 0,
-            preferredHeight=#monstersTable * 35
-          },
-          children = {
-            {
-              tag="VerticalLayout",
-              children=monstersTable
-            }
-          }
-        },
-        {
-          tag="Row",
-          attributes={
+            id="EncounterPhaseBtn",
+            onClick = "69581b/finishEncounterPhase",
+            fontSize=20,
+            color="white",
+            interactable=false,
             preferredHeight=50
           },
-          children = {
-            {
-              tag="Cell",
-              children={
-                tag="Button",
-                attributes={
-                  id="EncounterPhaseBtn",
-                  onClick = "69581b/finishEncounterPhase",
-                  fontSize=20,
-                  color="white",
-                  interactable=false
-                },
-                value="Encounter phase",
-              }
-            },
-          }
+          value="Encounter phase",
         },
         {
-          tag="Row",
+          tag="Button",
           attributes={
+            id="MythosPhaseBtn",
+            onClick = "69581b/finishMythosPhase",
+            fontSize=20,
+            color="white",
+            interactable=false,
             preferredHeight=50
           },
-          children = {
-            {
-              tag="Cell",
-              children={
-                tag="Button",
-                attributes={
-                  id="MythosPhaseBtn",
-                  onClick = "69581b/finishMythosPhase",
-                  fontSize=20,
-                  color="white",
-                  interactable=false
-                },
-                value="Mythos phase",
-              }
-            },
-          }
+          value="Mythos phase",
         }
       }
     }
@@ -135,25 +90,6 @@ function onLoad()
   UI.setXmlTable(container)
 end
 
-function updateChildren()
-  if has_value(children, investigator[1]) then
-    table.remove(children, childrenTableID)
-  else
-    table.insert(children, 
-      {
-        tag = "Button",
-        attributes = {
-          id=investigator[1].getName(),
-          onClick = "69581b/toggleTurn",
-          fontSize = 20,
-          color = investigator[2],
-          interactable=true
-        },
-        value = investigator[1].getName(),
-      }
-    )
-  end
-end
 
 function updateMonsters(state)
   -- make copy of current monster table
@@ -163,16 +99,29 @@ function updateMonsters(state)
   -- add monster if spawned
   if state[1] == 'spawned' then
     table.insert(monsterContainer,
-    {
-      tag = "Button",
-      attributes = {
-        id=state[2].getGUID(),
-        onClick = "69581b/toggleMonsterTurn",
-        fontSize = 20,
-        interactable=false
-      },
-      value = state[2].getName(),
-    })
+      {
+        tag="Row",
+        attributes={
+          preferredHeight="20"
+        },
+        children={
+          {
+            tag = "Button",
+            value = state[2].getName(),
+            attributes = {
+              id=state[2].getGUID(),
+              onClick = "69581b/toggleMonsterTurn",
+              fontSize = 20,
+              interactable=false
+            },
+          },
+          {
+            tag="Button",
+            value="X"
+          }
+        }
+      }
+    )
   end
 
   -- remove monster if defeated
@@ -204,13 +153,96 @@ function updateMonsters(state)
 end
 
 function updateInvestigators()
+
+  if has_value(children, investigator[1].getName()) then
+    table.remove(children, childrenTableID)
+  else
+    table.insert(children,
+
+      {
+        tag="HorizontalLayout",
+        attributes={
+          childForceExpandWidth=false,
+        },
+        children={
+          {
+            tag = "Button",
+            value = investigator[1].getName(),
+            attributes = {
+              flexibleWidth='0.8',
+              id=investigator[1].getName(),
+              onClick = "69581b/toggleTurn",
+              fontSize = 20,
+              color = investigator[2],
+              interactable=true,
+              preferredHeight=50
+            },
+          },
+          {
+            tag="Button",
+            value="X",
+            attributes={
+              flexibleWidth='0.2',
+              id='remove' .. investigator[1].getName(),
+              onClick = "69581b/toggleRemoveButton",
+            }
+          },
+          {
+            tag="Button",
+            value="Y",
+            attributes={
+              tooltip="Retire " .. investigator[1].getName(),
+              active=false,
+              flexibleWidth='0.2',
+              id='asdasd' .. investigator[1].getName(),
+              onClick = "69581b/removeInvestigator",
+              color="Red"
+            }
+          }
+        }
+      }
+    )
+  end
   if (#children > 0) then
     UI.setAttribute('investigators', 'active', 'true')
+    UI.setAttribute('ActionPhaseBtn', 'interactable', 'true')
   end
-  UI.setAttribute('investigators', 'preferredHeight', #children*35)
+  UI.setAttribute('top', 'height', 200 + #children * 50)
   phaseTracker = UI.getXmlTable()
-  phaseTracker[1].children[2].children[1].children = children
+  phaseTracker[1].children[2].children = children
   UI.setXmlTable(phaseTracker)
+end
+
+function toggleRemoveButton(player, value, id)
+  id = id:sub(7)
+  UI.setAttribute('asdasd' .. id, 'active', 'true')
+  UI.setAttribute('remove' .. id, 'active', 'false')
+
+  Wait.frames(
+    function()
+      UI.setAttribute('asdasd' .. id, 'active', 'false')
+      UI.setAttribute('remove' .. id, 'active', 'true')
+    end, 64
+  )
+end
+
+function removeInvestigator(player, value, id)
+  id = id:sub(7)
+  if has_value(children, id) then
+    table.remove(children, childrenTableID)
+  end
+  phaseTracker[1].children[2].children = children
+  
+  Wait.frames(
+    function()
+      UI.setAttribute('top', 'height', 200 + #children * 50)
+      UI.setXmlTable(phaseTracker)
+      if (#children == 0) then
+        UI.setAttribute('investigators', 'active', 'false')
+        UI.setAttribute('ActionPhaseBtn', 'interactable', 'false')
+      end
+    end, 8
+  )
 end
 
 function toggleMonsterTurn(player, value, id)
@@ -233,7 +265,8 @@ end
 
 function toggleTurn(player, value, id)
   if has_value(children, id) then
-    UI.setAttribute(children[tonumber(childrenTableID)].attributes.id, 'interactable', 'false')
+    UI.setAttribute(children[tonumber(childrenTableID)].children[1].attributes.id, 'interactable', 'false')
+    UI.setAttribute('remove' .. children[tonumber(childrenTableID)].children[1].attributes.id, 'interactable', 'false')
   end
 
   Wait.frames(
@@ -265,7 +298,7 @@ end
 
 function has_value (tab, val)
   for index, value in ipairs(tab) do
-    if value.value == val then
+    if value.children[1].value == val then
       childrenTableID = index
       return true
     end
@@ -289,7 +322,8 @@ function finishMythosPhase()
   UI.setAttribute('ActionPhaseBtn', 'interactable', 'true')
 
   for index, value in ipairs(children) do
-    UI.setAttribute(value.attributes.id, 'interactable', 'true')
+    UI.setAttribute(value.children[1].attributes.id, 'interactable', 'true')
+    UI.setAttribute('remove' .. value.children[1].attributes.id, 'interactable', 'true')
   end
 end
 
@@ -299,7 +333,7 @@ function finished(tab, val)
   end
 
   for index, v in ipairs(tab) do
-    if UI.getAttribute(v.attributes.id, "interactable") == val then
+    if UI.getAttribute(v.children[1].attributes.id, "interactable") == val then
       return false
     end
   end
