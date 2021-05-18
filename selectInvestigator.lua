@@ -34,7 +34,6 @@ function click_func(obj, player_clicker_color, alt_click)
   table.insert(selectedInvestigators, obj)
 
   investigatorsObj.setTable('investigator', { obj, player_clicker_color })
-  investigatorsObj.call('updateChildren')
   investigatorsObj.call('updateInvestigators')
 end
 
