@@ -47,19 +47,14 @@ function onLoad()
           },
           value="Monster phase",
         },
-        -- {
-        --   tag="HorizontalLayout",
-        --   attributes={
-        --     active=#monstersTable > 0,
-        --     prefferedHeight=35
-        --   },
-        --   children = {
-        --     {
-        --       tag="VerticalLayout",
-        --       children=monstersTable
-        --     }
-        --   }
-        -- },
+        {
+          tag="VerticalLayout",
+          attributes={
+            id="monsterTable",
+            active=false
+          },
+          children = monsterContainer
+        },
         {
           tag="Button",
           attributes={
@@ -92,32 +87,52 @@ end
 
 
 function updateMonsters(state)
-  -- make copy of current monster table
+  -- create copy of UI
   phaseTracker = UI.getXmlTable()
-  monsterContainer = phaseTracker[1].children[4].children[1].children
 
   -- add monster if spawned
   if state[1] == 'spawned' then
-    table.insert(monsterContainer,
+    table.insert(monstersTable,
       {
-        tag="Row",
+        tag="HorizontalLayout",
         attributes={
-          preferredHeight="20"
+          childForceExpandWidth=false,
         },
         children={
           {
             tag = "Button",
             value = state[2].getName(),
             attributes = {
+              flexibleWidth='0.8',
               id=state[2].getGUID(),
               onClick = "69581b/toggleMonsterTurn",
               fontSize = 20,
-              interactable=false
+              color = 'White',
+              interactable=false,
+              preferredHeight=50
             },
           },
           {
             tag="Button",
-            value="X"
+            value="X",
+            attributes={
+              flexibleWidth='0.2',
+              id='remove' .. state[2].getName(),
+              onClick = "69581b/toggleRemoveButton",
+              interactable=true,
+            }
+          },
+          {
+            tag="Button",
+            value="Y",
+            attributes={
+              tooltip="Retire " .. state[2].getName(),
+              active=false,
+              flexibleWidth='0.2',
+              id='asdasd' .. state[2].getName(),
+              onClick = "69581b/removeMonster",
+              color="Red"
+            }
           }
         }
       }
@@ -126,29 +141,34 @@ function updateMonsters(state)
 
   -- remove monster if defeated
   if state[1] == 'defeated' then
-    for i, monster in ipairs(monsterContainer) do
-      if monster.attributes.id == state[2].getGUID() then
-        table.remove(monsterContainer, i)
-      end
+    monstersTable = phaseTracker[1].children[4].children
+    if has_value(monstersTable, state[2].getName()) then
+      table.remove(monstersTable, childrenTableID)
     end
 
     -- advance to encounter phase if all monsters are defeated or exausted
-    if finished(monsterContainer, 'true') == true and UI.getAttribute('MonsterPhaseBtn', 'interactable') == 'true' then
+    if finished(monstersTable, 'true') == true and UI.getAttribute('MonsterPhaseBtn', 'interactable') == 'true' then
       broadcastToAll('All monsters defeated or exausted', {0, 1, 0})
       UI.setAttribute('MonsterPhaseBtn', 'interactable', 'false')
       UI.setAttribute('EncounterPhaseBtn', 'interactable', 'true')
     end
   end  
 
-  -- update monster attributes
-  if #monsterContainer > 0 then
-    UI.setAttribute('monsters', 'active', 'true')  
-    UI.setAttribute('monsters', 'preferredHeight', #phaseTracker[1].children[4].children[1].children*35)
-    else
-      UI.setAttribute('monsters', 'active', 'false')
+  -- update UI
+  if (#monstersTable > 0) then
+    UI.setAttribute('monsterTable', 'active', 'true')
   end
 
-  -- update ui table
+  height = UI.getAttribute('top', 'height')
+
+  if state[1] == 'spawned' then
+    height = height + 50
+    else
+      height = height - 50
+  end
+
+  UI.setAttribute('top', 'height', height)
+  phaseTracker[1].children[4].children = monstersTable
   UI.setXmlTable(phaseTracker)
 end
 
@@ -156,9 +176,9 @@ function updateInvestigators()
 
   if has_value(children, investigator[1].getName()) then
     table.remove(children, childrenTableID)
+    height = UI.getAttribute('top', 'height') - 50
   else
     table.insert(children,
-
       {
         tag="HorizontalLayout",
         attributes={
@@ -202,12 +222,15 @@ function updateInvestigators()
         }
       }
     )
+    height = UI.getAttribute('top', 'height') + 50
   end
+
   if (#children > 0) then
     UI.setAttribute('investigators', 'active', 'true')
     UI.setAttribute('ActionPhaseBtn', 'interactable', 'true')
   end
-  UI.setAttribute('top', 'height', 200 + #children * 50)
+
+  UI.setAttribute('top', 'height', height)
   phaseTracker = UI.getXmlTable()
   phaseTracker[1].children[2].children = children
   UI.setXmlTable(phaseTracker)
@@ -226,6 +249,29 @@ function toggleRemoveButton(player, value, id)
   )
 end
 
+function removeMonster(player, value, id)
+  phaseTracker = UI.getXmlTable()
+  monstersTable = phaseTracker[1].children[4].children
+
+  id = id:sub(7)
+  if has_value(monstersTable, id) then
+    table.remove(monstersTable, childrenTableID)
+  end
+  
+  Wait.frames(
+    function()
+      height = UI.getAttribute('top', 'height')
+      UI.setAttribute('top', 'height', height - 50)
+      UI.setXmlTable(phaseTracker)
+      if (#monstersTable == 0) then
+        UI.setAttribute('monsterTable', 'active', 'false')
+        UI.setAttribute('MonsterPhaseBtn', 'interactable', 'false')
+        UI.setAttribute('EncounterPhaseBtn', 'interactable', 'true')
+      end
+    end, 8
+  )
+end
+
 function removeInvestigator(player, value, id)
   id = id:sub(7)
   if has_value(children, id) then
@@ -235,7 +281,8 @@ function removeInvestigator(player, value, id)
   
   Wait.frames(
     function()
-      UI.setAttribute('top', 'height', 200 + #children * 50)
+      height = UI.getAttribute('top', 'height') - 50
+      UI.setAttribute('top', 'height', height)
       UI.setXmlTable(phaseTracker)
       if (#children == 0) then
         UI.setAttribute('investigators', 'active', 'false')
@@ -246,15 +293,15 @@ function removeInvestigator(player, value, id)
 end
 
 function toggleMonsterTurn(player, value, id)
-  for i, monster in ipairs(monsterContainer) do
-    if monster.attributes.id == id then
-      UI.setAttribute(monster.attributes.id, "interactable", 'false')
+  for i, monster in ipairs(monstersTable) do
+    if monster.children[1].attributes.id == id then
+      UI.setAttribute(monster.children[1].attributes.id, "interactable", 'false')
     end
   end
 
   Wait.frames(
     function()
-      if finished(monsterContainer, 'true') == true then
+      if finished(monstersTable, 'true') == true then
         UI.setAttribute('MonsterPhaseBtn', 'interactable', 'false')
         UI.setAttribute('EncounterPhaseBtn', 'interactable', 'true')
       end
@@ -273,19 +320,16 @@ function toggleTurn(player, value, id)
     function()
       if finished(children, 'true') == true then
 
-        if monsterContainer ~= nil then
-          for i, monster in ipairs(monsterContainer) do
-            UI.setAttribute(monster.attributes.id, "interactable", 'true')
+        if monstersTable ~= nil then
+          for i, monster in ipairs(monstersTable) do
+            UI.setAttribute(monster.children[1].attributes.id, "interactable", 'true')
           end          
         end
 
         UI.setAttribute('ActionPhaseBtn', 'interactable', 'false')
 
-        if monsterContainer ~= nil and #monsterContainer > 0 then
+        if monstersTable ~= nil and #monstersTable > 0 then
           UI.setAttribute('MonsterPhaseBtn', 'interactable', 'true')
-          for i, monster in ipairs(monstersTable) do
-            UI.setAttribute(monster.attributes.id, 'interactable', 'true')
-          end
           else
             broadcastToAll('No monsters in play. Going to the encounter phase!', {0, 1, 0})
             finishMonsterPhase()
