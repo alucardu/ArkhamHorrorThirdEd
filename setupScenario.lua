@@ -274,6 +274,12 @@ function buttonClick_place(scenarioBag)
 
   Wait.frames(
     function()
+      mythosCup.shuffle()
+    end, 32
+  )
+
+  Wait.frames(
+    function()
       getObjectFromGUID('3e54de').call('spawnClue', 3)
     end, 64
   )
@@ -309,7 +315,7 @@ function unpackBag(scenarioBag)
                 if item.getTags()[1] == 'Street' then table.insert(streetTiles, item) end
                 if item.getTags()[1] == 'Anomalies' then anomaliesDeck = item end
 
-                if item.getName() == 'Mythos Cup' then addButtonsToMythosCup(item.getGUID()) end
+                if item.getName() == 'Mythos Cup' then mythosCup = item addButtonsToMythosCup(item.getGUID()) end
                 if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
                 if item.getName() == 'Event' then eventDeck = getObjectFromGUID(item.getGUID()) end
                 if item.getName() == 'Headlines' then headlinesToken = getObjectFromGUID(item.getGUID()) end
