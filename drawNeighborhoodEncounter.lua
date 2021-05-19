@@ -27,23 +27,6 @@ function drawNeighborhoodEncounter(obj)
   end
 end
 
-function drawNeighborhoodAnomaly(obj)
-  anomaliesDeck = getObjectFromGUID('3e1179').getVar('anomaliesDeck')
-  anomaliesDeckPos = anomaliesDeck.getPosition()
-  anomalyCard = anomaliesDeck.takeObject()
-  anomalyCard.deal(1, obj[1])
-
-  local func = function(player_color) anomaly(player_color, i, anomalyCard, deck) end
-  anomalyCard.addContextMenuItem('Encounter', func)
-end
-
-function anomaly(player_color, i, anomalyCard, deck)
-  anomalyCard.flip()
-  anomalyCard.setPosition({x=anomaliesDeckPos.x, y=anomaliesDeckPos.y, z=anomaliesDeckPos.z - 5})
-  anomalyCard.setPositionSmooth({x=anomaliesDeckPos.x, y=anomaliesDeckPos.y - 0.1, z=anomaliesDeckPos.z})
-  broadcastToAll('Returned anomaly card to the bottom of the anomaly deck', {1, 1, 1})
-end
-
 function eventSuccess(player_color, i, encounterCard, deck)
   discardDeck = getObjectFromGUID('077454').getVar('discardDeck')
 
