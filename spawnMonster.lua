@@ -1,12 +1,13 @@
-function spawnMonster()
+function spawnMonster(spawnedMonster)
   monsterDeck = getObjectFromGUID('3e1179').getVar('monsterDeck')
-
   monsterDeckPos = monsterDeck.getPosition()
-
-  local spawnedMonster = monsterDeck.takeObject({
-    position = {x = monsterDeckPos.x + 2.5, y = monsterDeckPos.y, z = monsterDeckPos.z},
-    index=monsterDeck.getQuantity() - 1
-  })
+  
+  if spawnedMonster == nil then
+    spawnedMonster = monsterDeck.takeObject({
+      position = {x = monsterDeckPos.x + 2.5, y = monsterDeckPos.y, z = monsterDeckPos.z},
+      index=monsterDeck.getQuantity() - 1
+    })
+  end  
   
   investigatorsObj = getObjectFromGUID('69581b')
   investigatorsObj.setVar('monsters', spawnedMonster)

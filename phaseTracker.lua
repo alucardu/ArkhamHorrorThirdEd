@@ -151,7 +151,7 @@ function updateMonsters(state)
   -- remove monster if defeated
   if state[1] == 'defeated' then
     monstersTable = phaseTracker[1].children[4].children
-    if has_value(monstersTable, state[2].getName()) then
+    if has_value(monstersTable, state[2].getGUID()) then
       table.remove(monstersTable, childrenTableID)
     end
 
@@ -179,7 +179,9 @@ function updateMonsters(state)
     )
     
     else
-      height = (height - 50)
+      height = UI.getAttribute('top', 'height')
+      height = tonumber(height) - 50
+      height = UI.setAttribute('top', 'height', height)
   end
 
   phaseTracker[1].children[4].children = monstersTable

@@ -229,9 +229,7 @@ function buttonClick_place(scenarioBag)
 
       function onObjectLeaveContainer(container, object)
         if object.getTags()[1] == 'Monsters' then
-          investigatorsObj = getObjectFromGUID('69581b')
-          investigatorsObj.setVar('monsters', object)
-          investigatorsObj.call('updateMonsters', {'spawned', object})
+          getObjectFromGUID('85fc44').call('spawnMonster', object)
         end
       end
   
