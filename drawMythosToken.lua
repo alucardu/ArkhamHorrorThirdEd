@@ -32,7 +32,7 @@ function draw_mythos_token(obj)
 
   table.insert(drawnMythosTokens, takenObject)
 
-  if takenObject.getName() == 'Spread Doom' then getObjectFromGUID('077454').call('spreadDoom') end
+  if takenObject.getName() == 'Spread Doom' then getObjectFromGUID('077454').call('spreadDoom', {takenObject, 'mythos'}) end
   if takenObject.getName() == 'Read Headline' then getObjectFromGUID('4e81c7').call('readHeadline') end
   if takenObject.getName() == 'Blank' then getObjectFromGUID('50363f').call('blank') end 
   if takenObject.getName() == 'Spawn Monster' then getObjectFromGUID('85fc44').call('spawnMonster') end
