@@ -5,6 +5,7 @@ scenarios = {
 
 neighborhoodDecks = {}
 neighborhoodTiles = {}
+streetTiles= {}
 anomaliesDeck = {}
 monsterDeck = {}
 eventDeck = {}
@@ -255,6 +256,12 @@ function buttonClick_place(scenarioBag)
     o.addContextMenuItem('Draw anomaly', func)
   end
 
+  for i,o in ipairs(streetTiles) do
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
+    o.addContextMenuItem('Draw encounter', func)
+  end
+  
+
   getObjectFromGUID('3fe222').call('removeInvestigatorsSelectButtons')
 
   broadcastToAll("Objects Placed", {1,1,1})
@@ -299,6 +306,7 @@ function unpackBag(scenarioBag)
 
                 if item.getTags()[2] == 'Deck' then table.insert(neighborhoodDecks, item) end
                 if item.getTags()[2] == 'Neighborhood' then table.insert(neighborhoodTiles, item) end
+                if item.getTags()[1] == 'Street' then table.insert(streetTiles, item) end
                 if item.getTags()[1] == 'Anomalies' then anomaliesDeck = item end
 
                 if item.getName() == 'Mythos Cup' then addButtonsToMythosCup(item.getGUID()) end
