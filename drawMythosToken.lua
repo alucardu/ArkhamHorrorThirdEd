@@ -1,5 +1,6 @@
 posToken = -35
 drawnMythosTokens = {}
+mythosCounter = 0
 
 function draw_mythos_token(obj)
   posToken = posToken + 0.4
@@ -34,6 +35,12 @@ function draw_mythos_token(obj)
   if takenObject.getName() == 'Spawn Clue' then getObjectFromGUID('3e54de').call('spawnClue') end
   if takenObject.getName() == 'Gate Burst' then getObjectFromGUID('f3944a').call('gateBurst') end
   if takenObject.getName() == 'Reckoning' then getObjectFromGUID('432f00').call('reckoning') end 
-  if takenObject.getName() == 'Spread Terror' then getObjectFromGUID('02db23').call('spreadTerror') end 
+  if takenObject.getName() == 'Spread Terror' then getObjectFromGUID('02db23').call('spreadTerror') end
+
+  mythosCounter = mythosCounter + 1
+  broadcastToAll('Mythostokens ' .. mythosCounter .. ' of 2 drawn', {0, 1, 0})
+  if mythosCounter == 2 then
+    mythosCounter = 0
+  end
 
 end
