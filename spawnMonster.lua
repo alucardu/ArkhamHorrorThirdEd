@@ -7,7 +7,7 @@ function spawnMonster(spawnedMonster)
       position = {x = monsterDeckPos.x + 2.5, y = monsterDeckPos.y, z = monsterDeckPos.z},
       index=monsterDeck.getQuantity() - 1
     })
-  end  
+  end
   
   investigatorsObj = getObjectFromGUID('69581b')
   investigatorsObj.setVar('monsters', spawnedMonster)
