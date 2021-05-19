@@ -17,7 +17,7 @@ function spawnMonster(spawnedMonster)
   monsterDeck = getObjectFromGUID('3e1179').getVar('monsterDeck')
   monsterDeckPos = monsterDeck.getPosition()
   
-  if spawnedMonster.getTags()[1] == nil then
+  if spawnedMonster == nil or spawnedMonster.getTags()[1] == nil then
     spawnedMonster = monsterDeck.takeObject({
       position = {x = monsterDeckPos.x + 2.5, y = monsterDeckPos.y, z = monsterDeckPos.z},
       index=monsterDeck.getQuantity() - 1
