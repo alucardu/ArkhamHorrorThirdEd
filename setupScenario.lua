@@ -1,7 +1,6 @@
 scenarios = {
   getObjectFromGUID('d14543'),
-  getObjectFromGUID('924d1a'),
-  getObjectFromGUID('a4853a')
+  getObjectFromGUID('a4853a'),
 }
 
 neighborhoodDecks = {}
@@ -44,7 +43,6 @@ end
 --Make setup button
 function createSetupButton(scenarioBag)
   scenarioBag.createButton({
-
     label="Setup", click_function="buttonClick_setup", function_owner=self,
     position={-2,0.3,0}, rotation={0,270,0}, height=350, width=800,
     font_size=250, color={0,0,0}, font_color={1,1,1}
@@ -222,6 +220,62 @@ function buttonClick_place(scenarioBag)
     font_size=250, color={0,0,0}, font_color={1,1,1}
   })
 
+  unpackBag(scenarioBag)
+
+  Wait.frames(
+    function()
+      if scenarioBag.guid == 'd14543' then secondBag = '924d1a' end
+      if scenarioBag.guid == 'a4853a' then secondBag = 'c2eec7' end
+
+      function onObjectLeaveContainer(container, object)
+        if object.getTags()[1] == 'Monsters' then
+          investigatorsObj = getObjectFromGUID('69581b')
+          investigatorsObj.setVar('monsters', object)
+          investigatorsObj.call('updateMonsters', {'spawned', object})
+        end
+      end
+  
+      unpackBag(getObjectFromGUID(secondBag))
+    end, 64
+  )
+
+  if headlinesToken ~= null then
+    setHeadlines(headlinesToken.getDescription())
+  end
+
+  for i,o in ipairs(neighborhoodTiles) do
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
+    o.addContextMenuItem('Draw encounter', func)
+
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodAnomaly', {player_color, i, o}) end
+    o.addContextMenuItem('Draw anomaly', func)
+  end
+
+  getObjectFromGUID('3fe222').call('removeInvestigatorsSelectButtons')
+
+  broadcastToAll("Objects Placed", {1,1,1})
+
+  Wait.frames(
+    function()
+      shuffleAllDecks()
+    end, 32
+  )
+
+  Wait.frames(
+    function()
+      getObjectFromGUID('3e54de').call('spawnClue', 3)
+    end, 64
+  )
+
+  Wait.frames(
+    function()
+      getObjectFromGUID('077454').call('spreadDoom')
+    end, 96
+  )
+
+end
+
+function unpackBag(scenarioBag)
   local bagObjList = scenarioBag.getObjects()
   for guid, entry in pairs(scenarioBag.getTable('memoryList')) do
       local obj = getObjectFromGUID(guid)
@@ -252,42 +306,6 @@ function buttonClick_place(scenarioBag)
           end
       end
   end
-
-  if headlinesToken ~= null then
-    setHeadlines(headlinesToken.getDescription())
-  end
-
-  for i,o in ipairs(neighborhoodTiles) do
-    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
-    o.addContextMenuItem('Draw encounter', func)
-
-    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodAnomaly', {player_color, i, o}) end
-    o.addContextMenuItem('Draw anomaly', func)
-  end
-
-  getObjectFromGUID('3fe222').call('removeInvestigatorsSelectButtons')
-
-  broadcastToAll("Objects Placed", {1,1,1})
-
-  Wait.frames(
-    function()
-      shuffleAllDecks()
-    end, 32
-  )
-
-
-  Wait.frames(
-    function()
-      getObjectFromGUID('3e54de').call('spawnClue', 3)
-    end, 64
-  )
-
-  Wait.frames(
-    function()
-      getObjectFromGUID('077454').call('spreadDoom')
-    end, 96
-  )
-
 end
 
 function shuffleAllDecks()

@@ -3,6 +3,7 @@ children = {}
 monstersTable = {}
 monsters = {}
 childrenTableID = ''
+frames = 0
 
 function onObjectSearchStart()
   UI.setAttribute('top', 'active', 'false')
@@ -125,7 +126,7 @@ function updateMonsters(state)
             value="X",
             attributes={
               flexibleWidth='0.2',
-              id='remove' .. state[2].getName(),
+              id='remove' .. state[2].getGUID(),
               onClick = "69581b/toggleRemoveButton",
               interactable=true,
             }
@@ -134,10 +135,10 @@ function updateMonsters(state)
             tag="Button",
             value="Y",
             attributes={
-              tooltip="Retire " .. state[2].getName(),
+              tooltip="Retire " .. state[2].getGUID(),
               active=false,
               flexibleWidth='0.2',
-              id='asdasd' .. state[2].getName(),
+              id='asdasd' .. state[2].getGUID(),
               onClick = "69581b/removeMonster",
               color="Red"
             }
@@ -167,15 +168,20 @@ function updateMonsters(state)
     UI.setAttribute('monsterTable', 'active', 'true')
   end
 
-  height = UI.getAttribute('top', 'height')
-
   if state[1] == 'spawned' then
-    height = height + 50
+    frames = frames + 15
+    Wait.frames(
+      function()
+        height = UI.getAttribute('top', 'height')
+        height = tonumber(height) + 50
+        height = UI.setAttribute('top', 'height', height)
+      end, frames
+    )
+    
     else
-      height = height - 50
+      height = (height - 50)
   end
 
-  UI.setAttribute('top', 'height', height)
   phaseTracker[1].children[4].children = monstersTable
   UI.setXmlTable(phaseTracker)
 end
@@ -352,7 +358,7 @@ end
 
 function has_value (tab, val)
   for index, value in ipairs(tab) do
-    if value.children[1].value == val then
+    if value.children[1].attributes.id == val then
       childrenTableID = index
       return true
     end
