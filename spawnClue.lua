@@ -1,3 +1,18 @@
+spawnClueBtn = getObjectFromGUID('98bc78')
+
+function onLoad()
+  params = {
+    click_function="spawnClue",
+    tooltip="Spawn a clue",
+    function_owner = self,
+    height=1250,
+    width=1250,
+    color={0, 0, 0, 0},
+    position={0, 0.1, 0}
+  }
+  spawnClueBtn.createButton(params)
+end
+
 function spawnClue(amount)
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')
@@ -6,7 +21,7 @@ function spawnClue(amount)
   pos = {x = deckPos.x, y = deckPos.y, z = deckPos.z + - 5}
   frames = 0
 
-  if amount ~= nill then
+  if type(amount) == 'number' then
     for i = amount, 1, -1 do
       Wait.frames(
         function()
@@ -59,6 +74,8 @@ function someFunction()
    getObjectFromGUID('c896e0').takeObject({
     position={x=neighborhoodPosition.x, y=neighborhoodPosition.y + 5, z=neighborhoodPosition.z}
   })
+
+  broadcastToAll('Clue spawned on ' .. neighborhoodDeck.getTags()[1] , {0, 1, 0})
 end
 
 function shuffleFn(deck) 
