@@ -35,6 +35,7 @@ end
 function defeatMonster(player_color, i, spawnedMonster)
   investigatorsObj.setVar('monsters', spawnedMonster)
   investigatorsObj.call('updateMonsters', {'defeated', spawnedMonster})
+  spawnedMonster.setRotationSmooth({x=180, y=0, z=0})
   spawnedMonster.setPositionSmooth({x=monsterDeckPos.x, y=monsterDeckPos.y + 5, z=monsterDeckPos.z})
   broadcastToAll(player_color .. ' has defeated ' .. spawnedMonster.getName(), {0, 1, 0})
 end
