@@ -232,6 +232,12 @@ function buttonClick_place(scenarioBag)
           getObjectFromGUID('85fc44').call('spawnMonster', object)
         end
       end
+
+      function onObjectLeaveContainer(container, object)
+        if object.getTags()[1] == 'Doom' then
+          getObjectFromGUID('077454').call('spreadDoom', object)
+        end
+      end
   
       unpackBag(getObjectFromGUID(secondBag))
     end, 64
