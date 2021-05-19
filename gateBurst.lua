@@ -1,3 +1,18 @@
+gateBurstBtn = getObjectFromGUID('151eec')
+
+function onLoad()
+  params = {
+    click_function="gateBurst",
+    tooltip="Resolve a Gate burst",
+    function_owner = self,
+    height=1250,
+    width=1250,
+    color={0, 0, 0, 0},
+    position={0, 0.1, 0}
+  }
+  gateBurstBtn.createButton(params)
+end
+
 function gateBurst()
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')

@@ -1,8 +1,23 @@
+spawnMonsterBtn = getObjectFromGUID('0d44f6')
+
+function onLoad()
+  params = {
+    click_function="spawnMonster",
+    tooltip="Spawn a monster",
+    function_owner = self,
+    height=1250,
+    width=1250,
+    color={0, 0, 0, 0},
+    position={0, 0.1, 0}
+  }
+  spawnMonsterBtn.createButton(params)
+end
+
 function spawnMonster(spawnedMonster)
   monsterDeck = getObjectFromGUID('3e1179').getVar('monsterDeck')
   monsterDeckPos = monsterDeck.getPosition()
   
-  if spawnedMonster == nil then
+  if spawnedMonster.getTags()[1] == nil then
     spawnedMonster = monsterDeck.takeObject({
       position = {x = monsterDeckPos.x + 2.5, y = monsterDeckPos.y, z = monsterDeckPos.z},
       index=monsterDeck.getQuantity() - 1
