@@ -1,12 +1,16 @@
-posToken = -35
+posXToken = -35
+posZToken = 0
 drawnMythosTokens = {}
 mythosCounter = 0
 
 function draw_mythos_token(obj)
-  posToken = posToken + 0.4
+  ui = UI.getXmlTable()
+  numberOfInvestigators = ui[1].children[2].children
+  posXToken = posXToken + 0.4
 
   if obj.getQuantity() == 0 then
-    posToken = -35
+    posXToken = -35
+    posZToken = 0
 
     for i, mythosToken in ipairs(drawnMythosTokens) do
       if mythosToken ~= nill then
@@ -23,7 +27,7 @@ function draw_mythos_token(obj)
   end
 
   local takenObject = obj.takeObject({
-    position = {x = posToken, y = 2, z = 0},
+    position = {x = posXToken, y = 2, z = posZToken},
   })
 
   table.insert(drawnMythosTokens, takenObject)
@@ -39,8 +43,17 @@ function draw_mythos_token(obj)
 
   mythosCounter = mythosCounter + 1
   broadcastToAll('Mythostokens ' .. mythosCounter .. ' of 2 drawn', {0, 1, 0})
-  if mythosCounter == 2 then
+
+  for i = 1, #numberOfInvestigators, 1 do    
+    if mythosCounter == i*2 then
+      posXToken = posXToken + 1.5
+    end
+  end
+
+  if mythosCounter == #numberOfInvestigators * 2 then
     mythosCounter = 0
+    posXToken = - 35
+    posZToken = posZToken - 1.5
   end
 
 end
