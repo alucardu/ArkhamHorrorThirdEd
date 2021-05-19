@@ -1,39 +1,52 @@
 discardDeck = nil
 
-function spreadDoom()
+function spreadDoom(doomToken)
+
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')
 
   eventDeckPos = eventDeck.getPosition()
   doomPos = {x = eventDeckPos.x + 4, y = eventDeckPos.y, z = eventDeckPos.z}
+
+  if doomToken == nil  then
+    takenObject = eventDeck.takeObject({
+      index = eventDeck.getQuantity() - 1,
+    })
   
-  local takenObject = eventDeck.takeObject({
-    index = eventDeck.getQuantity() - 1,
-  })
-
-  if discardDeck == nil then
-    takenObject.flip()
-    discardDeck = takenObject
-    discardDeck.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})
-    else
+    if discardDeck == nil then
       takenObject.flip()
-      takenObject.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})
-
-      local flipCard = function() discardDeck = discardDeck.putObject(takenObject) end
-      moveWatch = function() return not takenObject.isSmoothMoving() end
-      Wait.condition(flipCard, moveWatch)
-  end
-
-  for i, deck in ipairs(neighborhoodTiles) do
-    if takenObject.getTags()[1] == deck.getTags()[1] then
-      neighborhoodPosition = deck.getPosition()
+      discardDeck = takenObject
+      discardDeck.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})
+      else
+        takenObject.flip()
+        takenObject.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})
+  
+        local flipCard = function() discardDeck = discardDeck.putObject(takenObject) end
+        moveWatch = function() return not takenObject.isSmoothMoving() end
+        Wait.condition(flipCard, moveWatch)
     end
-  end
+  
+    for i, deck in ipairs(neighborhoodTiles) do
+      if takenObject.getTags()[1] == deck.getTags()[1] then
+        neighborhoodPosition = deck.getPosition()
+      end
+    end
+  
+    -- doomtoken
+    doomBag = getObjectFromGUID('f807c7')
+    doomToken = doomBag.takeObject({
+      position={x=neighborhoodPosition.x, y=neighborhoodPosition.y + 5, z=neighborhoodPosition.z}
+    })
 
-  -- doomtoken
-  getObjectFromGUID('f807c7').takeObject({
-    position={x=neighborhoodPosition.x, y=neighborhoodPosition.y + 5, z=neighborhoodPosition.z}
-  })
+    broadcastToAll('Add doom to ' .. takenObject.getTags()[1], {1,0,0})
+  end 
 
-  broadcastToAll('Add doom to ' .. takenObject.getTags()[1], {1,0,0})
+  local func = function(player_color) removeDoomToken(player_color, i, doomToken) end
+  doomToken.addContextMenuItem('Remove doom', func)
+
+end
+
+function removeDoomToken(player_color, index, token)
+  token.destruct()
+  broadcastToAll('Doom has been removed!', {0, 1, 0})
 end
