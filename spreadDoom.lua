@@ -1,14 +1,14 @@
 discardDeck = nil
 
 function spreadDoom(doomToken)
-
+  someVal = doomToken
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')
 
   eventDeckPos = eventDeck.getPosition()
   doomPos = {x = eventDeckPos.x + 4, y = eventDeckPos.y, z = eventDeckPos.z}
 
-  if doomToken == nil  then
+  if doomToken == 'setup' or doomToken == nil  then
     takenObject = eventDeck.takeObject({
       index = eventDeck.getQuantity() - 1,
     })
@@ -39,11 +39,21 @@ function spreadDoom(doomToken)
     })
 
     broadcastToAll('Add doom to ' .. takenObject.getTags()[1], {1,0,0})
-  end 
+  end
+  
 
-  local func = function(player_color) removeDoomToken(player_color, i, doomToken) end
-  doomToken.addContextMenuItem('Remove doom', func)
+  if someVal == 'setup' or type(someVal) ~= "string" then addContextMenu(doomToken) end
+end
 
+function addContextMenu(doomToken)
+  if 
+    doomToken ~= nil and
+    type(doomToken) ~= "string"
+  then
+    local func = function(player_color) removeDoomToken(player_color, i, doomToken) end
+    doomToken.addContextMenuItem('Remove doom', func)  
+  end
+  
 end
 
 function removeDoomToken(player_color, index, token)

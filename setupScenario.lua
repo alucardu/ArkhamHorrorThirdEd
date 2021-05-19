@@ -236,6 +236,10 @@ function buttonClick_place(scenarioBag)
         if object.getTags()[1] == 'Doom' then
           getObjectFromGUID('077454').call('spreadDoom', object)
         end
+
+        if object.getName() == 'Doom' then
+          getObjectFromGUID('077454').call('addContextMenu', 'spawn')
+        end
       end
   
       unpackBag(getObjectFromGUID(secondBag))
@@ -284,7 +288,7 @@ function buttonClick_place(scenarioBag)
 
   Wait.frames(
     function()
-      getObjectFromGUID('077454').call('spreadDoom')
+      getObjectFromGUID('077454').call('spreadDoom', 'setup')
     end, 96
   )
 
