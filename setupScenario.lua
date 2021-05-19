@@ -254,8 +254,8 @@ function buttonClick_place(scenarioBag)
     local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
     o.addContextMenuItem('Draw encounter', func)
 
-    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodAnomaly', {player_color, i, o}) end
-    o.addContextMenuItem('Draw anomaly', func)
+    local func = function(player_color) getObjectFromGUID('0f8883').call('spawnAnomaly', {player_color, i, o}) end
+    o.addContextMenuItem('Spawn anomaly', func)
   end
 
   for i,o in ipairs(streetTiles) do
