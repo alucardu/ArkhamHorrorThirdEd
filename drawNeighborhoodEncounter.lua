@@ -6,19 +6,23 @@ function drawNeighborhoodEncounter(obj)
   for i, deck in ipairs(neighborhoodDecks) do
     if obj[3].getTags()[1] == deck.getTags()[1] then
       deckPosition = deck.getPosition()
+      
       encounterCard = deck.takeObject()
       encounterCard.deal(1, obj[1])
 
-      local func = function(player_color) eventSuccess(player_color, i, encounterCard, deck) end
-      encounterCard.addContextMenuItem('Event success', func)
+      if deck.getTags()[1] ~= 'Street' then
+        local func = function(player_color) eventSuccess(player_color, i, encounterCard, deck) end
+        encounterCard.addContextMenuItem('Event success', func)
 
-      local func = function(player_color) eventFailed(player_color, i, encounterCard, deck) end
-      encounterCard.addContextMenuItem('Event failed', func)
+        local func = function(player_color) eventFailed(player_color, i, encounterCard, deck) end
+        encounterCard.addContextMenuItem('Event failed', func)
+      end
 
       local func = function(player_color) encounter(player_color, i, encounterCard, deck) end
       encounterCard.addContextMenuItem('Encounter', func)
 
       broadcastToAll('Dealt ' .. deck.getTags()[1] .. ' encounter card to ' .. obj[1], {0,1,0})
+      break
     end
   end
 end
