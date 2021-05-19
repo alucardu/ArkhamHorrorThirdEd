@@ -7,7 +7,7 @@ investigators = {
 
 function onLoad()
   for index, value in ipairs(investigators) do
-    investigator = getObjectFromGUID(value)
+    local investigator = getObjectFromGUID(value)
     name = investigator.getName()
     params = {
       click_function = "click_func",
@@ -18,6 +18,15 @@ function onLoad()
       tooltip        = 'Click to select ' .. name .. ' as your investigator',
     }
     investigator.createButton(params)
+    
+    local func = function(player_color) setStatus('White', investigator) end
+    investigator.addContextMenuItem('Normal', func)
+
+    local func = function(player_color) setStatus('Green', investigator) end
+    investigator.addContextMenuItem('Blessed', func)
+
+    local func = function(player_color) setStatus('Orange', investigator) end
+    investigator.addContextMenuItem('Cursed', func)
   end
   
 end
@@ -41,4 +50,8 @@ function removeInvestigatorsSelectButtons()
   for i, investigator in ipairs(selectedInvestigators) do
     investigator.clearButtons()
   end
+end
+
+function setStatus(status, investigator)
+  investigatorsObj.call('setInvestigatorStatus', {status, investigator})
 end

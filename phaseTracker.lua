@@ -311,6 +311,17 @@ function removeInvestigator(player, value, id)
   )
 end
 
+function setInvestigatorStatus(status)
+  phaseTracker = UI.getXmlTable()
+  investigatorContainer = phaseTracker[1].children[2].children
+
+  for i, investigator in ipairs(investigatorContainer) do
+    if investigator.children[1].attributes.id == status[2].getName() then
+      UI.setAttribute(investigator.children[1].attributes.id, 'color', status[1])      
+    end
+  end
+end
+
 function toggleMonsterTurn(player, value, id)
   for i, monster in ipairs(monstersTable) do
     if monster.children[1].attributes.id == id then
