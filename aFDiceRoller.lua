@@ -35,6 +35,8 @@ setting.colorDie = false
 
 --Turn on/off printing of the player who rolled (true or false)
 setting.print.player = true
+--Turn on/off printing the total number of successes rolled
+setting.print.summary = true
 --Turn on/off printing of individual results
 setting.print.individual = true
 --Turn on/off printing of "total" results (adding them together)
@@ -259,18 +261,18 @@ function displayResults(color)
         --Get values in table
         for _, die in ipairs(spawnedDice) do
             if die ~= nil then
-                table.insert(valueTable, tostring(die.getRotationValue()))
+                table.insert(valueTable, die)
             end
         end
         --Order them
         alphanumsort(valueTable)
     end
 
-    --Individual values
+    -- Individual values
     if setting.print.individual == true then
         --Add values to string
         for i, value in ipairs(valueTable) do
-            s = s .. value
+            s = s .. tostring(value.getRotationValue())
             if i < #valueTable then
                 s = s .. ", "
             end
@@ -280,12 +282,25 @@ function displayResults(color)
         end
     end
 
+    --Add total successes to string
+    if setting.print.summary == true then
+      local rolledSuccesses = 0
+      for i, value in ipairs(valueTable) do
+        if value.getRotationValue() == 'Success!' then
+          rolledSuccesses = rolledSuccesses + 1
+        end
+      end
+      if rolledSuccesses > 0 then successesColor = "Green" end
+      if rolledSuccesses == 0 then successesColor = "Red" end
+      successes = ' Total successes: ' .. rolledSuccesses
+    end
+
     --Total (will be void if there are no numbers)
     if setting.print.total == true then
         local total, hadNumber = 0, false
         for _, value in ipairs(valueTable) do
-            if tonumber(value) ~= nil then
-                total = total + tonumber(value)
+            if tonumber(tostring(value.getRotationValue())) ~= nil then
+                total = total + tonumber(tostring(value.getRotationValue()))
                 hadNumber = true
             end
         end
@@ -303,6 +318,7 @@ function displayResults(color)
     end
     --Broadcast result
     broadcastToAll(s, stringColor)
+    broadcastToAll(successes, successesColor)
 end
 
 
