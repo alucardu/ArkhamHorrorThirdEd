@@ -36,7 +36,7 @@ function draw_mythos_token(obj)
   if takenObject.getName() == 'Read Headline' then getObjectFromGUID('4e81c7').call('readHeadline') end
   if takenObject.getName() == 'Blank' then getObjectFromGUID('50363f').call('blank') end 
   if takenObject.getName() == 'Spawn Monster' then getObjectFromGUID('85fc44').call('spawnMonster') end
-  if takenObject.getName() == 'Spawn Clue' then getObjectFromGUID('3e54de').call('spawnClue') end
+  if takenObject.getName() == 'Spawn Clue' then getObjectFromGUID('3e54de').call('spawnClue', 1) end
   if takenObject.getName() == 'Gate Burst' then getObjectFromGUID('f3944a').call('gateBurst') end
   if takenObject.getName() == 'Reckoning' then getObjectFromGUID('432f00').call('reckoning') end 
   if takenObject.getName() == 'Spread Terror' then getObjectFromGUID('02db23').call('spreadTerror') end
