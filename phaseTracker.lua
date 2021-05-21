@@ -14,11 +14,12 @@ function onObjectSearchEnd()
 end
 
 function onLoad()
-  local container = {
+  container = {
     {
       tag="VerticalLayout",
       attributes={
         id="top",
+        active=false,
         width=200,
         height=200,
         color="rgba(0,0,0,0.7)",
@@ -309,6 +310,8 @@ function removeInvestigator(player, value, id)
       end
     end, 8
   )
+
+  getObjectFromGUID('3fe222').call('resetBtn', id)
 end
 
 function setInvestigatorStatus(status)
@@ -412,4 +415,13 @@ function finished(tab, val)
   end
 
   return true
+end
+
+function setGameUI(asd)
+  UI.setXmlTable(asd)
+  Wait.frames(
+    function()
+      UI.setAttribute('top', 'active', true)
+    end,12
+  )
 end
