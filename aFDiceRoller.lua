@@ -28,7 +28,7 @@ setting.maxCount = 10
 --Delay (seconds) after a click that the roll is done (0.5 or more)
 setting.rollDelay = 1.2
 --Time before dice are cleaned up (0 is instant, -1 won't clean them)
-setting.cleanupDelay = 5
+setting.cleanupDelay = -1
 
 --If it dyes the die the color of the player clicking (true or false)
 setting.colorDie = false
@@ -85,6 +85,11 @@ function onload(saved_data)
     createButtons()
 end
 
+--Set Dice tag to die for cross roller removal
+function onObjectLeaveContainer(container, die)
+  die.addTag('Die')
+end
+
 
 
 --Spawn dice for rolling
@@ -92,6 +97,10 @@ end
 
 
 function click_roll(_, color)
+    --Remove previous rolled dice when rolling new dice
+    for _, object in ipairs(getAllObjects()) do
+      if object.hasTag('Die') and not object.isSmoothMoving() then destroyObject(object) end
+    end
     --Dice spam protection check
     local denyRoll = false
     if setting.maxCount > 0 and #spawnedDice >= setting.maxCount then
