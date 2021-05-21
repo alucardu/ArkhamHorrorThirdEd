@@ -18,7 +18,9 @@ function drawAnomalyEncounterCard(player_color, i, anomalyToken)
   anomalyCard.deal(1, player_color)
 
   local func = function(player_color) discardAnomalyEncounterCard(player_color, i, anomalyCard) end
-  anomalyCard.addContextMenuItem('Encounter', func)  
+  anomalyCard.addContextMenuItem('Encounter', func)
+  
+  broadcastToAll('Dealt anomaly encounter card to ' .. player_color, {0,1,0})
 end
 
 function removeAnomalyToken(player_color, i, anomalyToken)
