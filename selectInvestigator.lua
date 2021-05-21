@@ -2,22 +2,17 @@ selected = true
 investigatorsObj = getObjectFromGUID('69581b')
 selectedInvestigators = {}
 investigators = {
-  '5244f1', '194c1c', 'ff211a'
+  getObjectFromGUID('5244f1'),
+  getObjectFromGUID('194c1c'),
+  getObjectFromGUID('ff211a')
 }
 
 function onLoad()
-  for index, value in ipairs(investigators) do
-    local investigator = getObjectFromGUID(value)
+  for index, investigator in ipairs(investigators) do
+    local investigator = investigator
     name = investigator.getName()
-    params = {
-      click_function = "click_func",
-      function_owner = self,
-      width          = 1000,
-      height         = 1400,
-      color          = {255, 255, 255, 0},
-      tooltip        = 'Click to select ' .. name .. ' as your investigator',
-    }
-    investigator.createButton(params)
+
+    setSelectBtn(investigator)
     
     local func = function(player_color) setStatus('White', investigator) end
     investigator.addContextMenuItem('Normal', func)
@@ -32,18 +27,11 @@ function onLoad()
 end
 
 function click_func(obj, player_clicker_color, alt_click)
-  if obj.getVar('selected') == true then 
-    obj.setVar('selected', false)
-    obj.editButton({tooltip='Click to select ' .. obj.getName() .. ' as your investigator'})    
-    else
-      obj.setVar('selected', true)
-      obj.editButton({tooltip='Click to unselect ' .. obj.getName() .. ' as your investigator'})
-  end
-
   table.insert(selectedInvestigators, obj)
 
   investigatorsObj.setTable('investigator', { obj, player_clicker_color })
   investigatorsObj.call('updateInvestigators')
+  obj.clearButtons()
 end
 
 function removeInvestigatorsSelectButtons()
@@ -54,4 +42,24 @@ end
 
 function setStatus(status, investigator)
   investigatorsObj.call('setInvestigatorStatus', {status, investigator})
+end
+
+function setSelectBtn(investigator)
+  local params = {
+    click_function = "click_func",
+    function_owner = self,
+    width          = 1000,
+    height         = 1400,
+    color          = {255, 255, 255, 0},
+    tooltip        = 'Click to select ' .. name .. ' as your investigator',
+  }
+  investigator.createButton(params)
+end
+
+function resetBtn(id)
+  for i, investigator in ipairs(investigators) do
+    if investigator.getName() == id then
+      setSelectBtn(investigator)
+    end
+  end
 end

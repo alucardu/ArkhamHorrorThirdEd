@@ -292,6 +292,16 @@ function buttonClick_place(scenarioBag)
     end, 96
   )
 
+  Wait.frames(
+    function()
+      selectDifficulty()
+    end, 512
+  )
+
+end
+
+function selectDifficulty()
+  getObjectFromGUID('496863').call('selectDifficulty')
 end
 
 function unpackBag(scenarioBag)
