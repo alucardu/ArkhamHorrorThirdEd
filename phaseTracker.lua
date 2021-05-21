@@ -4,6 +4,7 @@ monstersTable = {}
 monsters = {}
 childrenTableID = ''
 frames = 0
+currentTurn = 0
 
 function onObjectSearchStart()
   UI.setAttribute('top', 'active', 'false')
@@ -21,7 +22,7 @@ function onLoad()
         id="top",
         active=false,
         width=200,
-        height=200,
+        height=225,
         color="rgba(0,0,0,0.7)",
         rectAlignment="UpperRight",
         offsetXY="-200, 0"
@@ -88,6 +89,14 @@ function onLoad()
             preferredHeight=50
           },
           value="Mythos phase",
+        },
+        {
+          tag="Text",
+          attributes={
+            id="currentTurn",
+            text="Turn: 0",
+            preferredHeight=25
+          }
         }
       }
     }
@@ -401,6 +410,10 @@ function finishMythosPhase()
     UI.setAttribute(value.children[1].attributes.id, 'interactable', 'true')
     UI.setAttribute('remove' .. value.children[1].attributes.id, 'interactable', 'true')
   end
+
+  currentTurn = currentTurn + 1
+  UI.setAttribute('currentTurn', 'text', 'Turn: ' .. currentTurn)
+  
 end
 
 function finished(tab, val)
