@@ -229,7 +229,7 @@ function buttonClick_place(scenarioBag)
       if scenarioBag.guid == 'a4853a' then secondBag = 'c2eec7' end
 
       function onObjectLeaveContainer(container, object)
-        if object.getTags()[1] == 'Monsters' then
+        if object.getTags()[1] == 'Monsters' and container ~= monsterDeck then
           getObjectFromGUID('85fc44').call('spawnMonster', object)
         end
 
