@@ -11,9 +11,9 @@ monsterDeck = {}
 eventDeck = {}
 
 function updateSave(scenarioBag)
-    local data_to_save = {["ml"]=memoryList}
-    saved_data = JSON.encode(data_to_save)
-    scenarioBag.script_state = saved_data
+  local data_to_save = {["ml"]=scenarioBag.getTable('memoryList')}
+  saved_data = JSON.encode(data_to_save)
+  scenarioBag.script_state = saved_data
 end
 
 function onload()
@@ -225,15 +225,12 @@ function buttonClick_place(scenarioBag)
 
   Wait.frames(
     function()
-      if scenarioBag.guid == 'd14543' then secondBag = '924d1a' end
-      if scenarioBag.guid == 'a4853a' then secondBag = 'c2eec7' end
-
       function onObjectLeaveContainer(container, object)
-        if object.getTags()[1] == 'Monsters' and container ~= monsterDeck then
+        if object.hasTag('Monsters') == 'Monsters' and container ~= monsterDeck then
           getObjectFromGUID('85fc44').call('spawnMonster', object)
         end
 
-        if object.getTags()[1] == 'Doom' then
+        if object.hasTag('Doom') then
           getObjectFromGUID('077454').call('spreadDoom', {object, 'setupBag'})
         end
 
@@ -241,8 +238,6 @@ function buttonClick_place(scenarioBag)
           getObjectFromGUID('077454').call('addContextMenu', {object, 'leaveBag'})
         end
       end
-  
-      unpackBag(getObjectFromGUID(secondBag))
     end, 64
   )
 
@@ -317,15 +312,21 @@ function unpackBag(scenarioBag)
           --If obj is inside of the bag
           for _, bagObj in ipairs(bagObjList) do
               if bagObj.guid == guid then
-                local item = scenarioBag.takeObject({
-                    guid=guid, position=entry.pos, rotation=entry.rot,
-                })
+                local item = scenarioBag.takeObject(
+                  {
+                    guid=guid,
+                    position=entry.pos,
+                    rotation=entry.rot,
+                  })
+                if item.hasTag('setup') then
+                  item.setPositionSmooth({x=entry.pos.x, y=entry.pos.y + 5, z=entry.pos.z})
+                end
                 item.setLock(entry.lock)
 
-                if item.getTags()[2] == 'Deck' then table.insert(neighborhoodDecks, item) end
-                if item.getTags()[2] == 'Neighborhood' then table.insert(neighborhoodTiles, item) end
-                if item.getTags()[1] == 'Street' then table.insert(streetTiles, item) end
-                if item.getTags()[1] == 'Anomalies' then anomaliesDeck = item end
+                if item.hasTag('Neighborhood Deck') then table.insert(neighborhoodDecks, item) end
+                if item.hasTag('Neighborhood Tile') then table.insert(neighborhoodTiles, item) end
+                if item.hasTag('Street') then table.insert(streetTiles, item) end
+                if item.hasTag('Anomalies') then anomaliesDeck = item end
 
                 if item.getName() == 'Mythos Cup' then mythosCup = item addButtonsToMythosCup(item.getGUID()) end
                 if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end

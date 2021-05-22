@@ -1,3 +1,12 @@
+
+neighborhoodTags = {
+  'Rivertown',
+  'Downtown',
+  'Northside',
+  'Easttown',
+  'Merchant District',
+  'Miskantonic University'
+}
 discardDeck = nil
 
 function spreadDoom(doomToken)
@@ -31,7 +40,7 @@ function spreadDoom(doomToken)
     end
   
     for i, deck in ipairs(neighborhoodTiles) do
-      if takenObject.getTags()[1] == deck.getTags()[1] then
+      if deck.hasTag(returnNeighbordhoodTag(takenObject))then
         neighborhoodPosition = deck.getPosition()
       end
     end
@@ -42,7 +51,7 @@ function spreadDoom(doomToken)
       position={x=neighborhoodPosition.x, y=neighborhoodPosition.y + 5, z=neighborhoodPosition.z}
     })
 
-    broadcastToAll('Add doom to ' .. takenObject.getTags()[1], {1,0,0})
+    broadcastToAll('Add doom to ' .. returnNeighbordhoodTag(takenObject), {1,0,0})
   end
 
   -- when doom tokens come from second setup bag
@@ -62,4 +71,10 @@ end
 function removeDoomToken(player_color, index, token)
   token.destruct()
   broadcastToAll('Doom has been removed!', {0, 1, 0})
+end
+
+function returnNeighbordhoodTag(encounterCard)
+  for _, neighborhoodTag in ipairs(neighborhoodTags) do
+    if encounterCard.hasTag(neighborhoodTag) then return neighborhoodTag end
+  end
 end
