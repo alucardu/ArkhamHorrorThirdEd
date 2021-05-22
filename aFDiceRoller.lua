@@ -99,7 +99,9 @@ end
 function click_roll(_, color)
     --Remove previous rolled dice when rolling new dice
     for _, object in ipairs(getAllObjects()) do
-      if object.hasTag('Die') and not object.isSmoothMoving() then destroyObject(object) end
+      if object.hasTag('Die') and object.resting and math.floor(object.getPosition().y) < 3 then
+        destroyObject(object) 
+      end
     end
     --Dice spam protection check
     local denyRoll = false
