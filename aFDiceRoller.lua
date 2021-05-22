@@ -87,7 +87,9 @@ end
 
 --Set Dice tag to die for cross roller removal
 function onObjectLeaveContainer(container, die)
-  die.addTag('Die')
+  if container.hasTag('Roller') then
+    die.addTag('Die')
+  end
 end
 
 
