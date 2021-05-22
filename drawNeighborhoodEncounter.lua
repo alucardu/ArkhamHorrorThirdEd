@@ -31,6 +31,7 @@ function eventSuccess(player_color, i, encounterCard, deck)
   discardDeck = getObjectFromGUID('077454').getVar('discardDeck')
 
   if discardDeck == nil then
+    print('Event discard deck is empty')
     eventDiscardPos = {x = eventDeckPos.x + 4, y = eventDeckPos.y, z = eventDeckPos.z}
     encounterCard.setPosition(eventDiscardPos)
     getObjectFromGUID('077454').setVar('discardDeck', encounterCard)

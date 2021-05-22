@@ -23,6 +23,7 @@ function gateBurst()
   discardDeck = getObjectFromGUID('077454').getVar('discardDeck')
   
   if discardDeck == nil then
+    print('Event discard deck is empty')
     local takenObject = eventDeck.takeObject({
       position = doomPos
     })

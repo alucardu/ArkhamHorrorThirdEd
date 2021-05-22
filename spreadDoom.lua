@@ -17,6 +17,7 @@ function spreadDoom(doomToken)
     })
   
     if discardDeck == nil then
+      print('Event discard deck is empty')
       takenObject.flip()
       discardDeck = takenObject
       discardDeck.setPositionSmooth({x=doomPos.x, y=doomPos.y + 5, z=doomPos.z})
