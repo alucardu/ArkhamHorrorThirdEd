@@ -5,7 +5,7 @@ neighborhoodTags = {
   'Northside',
   'Easttown',
   'Merchant District',
-  'Miskantonic University'
+  'Miskatonic University'
 }
 discardDeck = nil
 

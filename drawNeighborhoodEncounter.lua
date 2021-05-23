@@ -1,10 +1,19 @@
+neighborhoodTags = {
+  'Rivertown',
+  'Downtown',
+  'Northside',
+  'Easttown',
+  'Merchant District',
+  'Miskatonic University'
+}
+
 function drawNeighborhoodEncounter(obj)
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
   eventDeckPos = eventDeck.getPosition()
   neighborhoodDecks = getObjectFromGUID('3e1179').getTable('neighborhoodDecks')
 
   for i, deck in ipairs(neighborhoodDecks) do
-    if obj[3].getTags()[1] == deck.getTags()[1] then
+    if deck.hasTag(returnNeighbordhoodTag(obj[3])) then
       deckPosition = deck.getPosition()
       
       encounterCard = deck.takeObject()
@@ -88,4 +97,10 @@ function shuffleFn(deck)
     end,
     96
   )
+end
+
+function returnNeighbordhoodTag(encounterCard)
+  for _, neighborhoodTag in ipairs(neighborhoodTags) do
+    if encounterCard.hasTag(neighborhoodTag) then return neighborhoodTag end
+  end
 end

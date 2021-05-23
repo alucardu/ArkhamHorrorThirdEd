@@ -5,7 +5,7 @@ neighborhoodTags = {
   'Northside',
   'Easttown',
   'Merchant District',
-  'Miskantonic University'
+  'Miskatonic University'
 }
 
 spawnClueBtn = getObjectFromGUID('98bc78')
@@ -82,6 +82,7 @@ end
 
 function setData()
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
+  print(eventDeck)
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')
   neighborhoodDecks = getObjectFromGUID('3e1179').getTable('neighborhoodDecks')
   deckPos = eventDeck.getPosition()

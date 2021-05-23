@@ -221,25 +221,26 @@ function buttonClick_place(scenarioBag)
     font_size=250, color={0,0,0}, font_color={1,1,1}
   })
 
+  function onObjectLeaveContainer(container, object)
+    if object.hasTag('Monsters') and container ~= monsterDeck then
+      getObjectFromGUID('85fc44').call('spawnMonster', object)
+    end
+
+    if object.hasTag('Doom') and object.hasTag('setup') then
+      Wait.frames(
+        function()
+          getObjectFromGUID('077454').call('spreadDoom', {object, 'setupBag'}) 
+        end, 64 
+      )
+    end
+
+    if object.getName() == 'Doom' and not object.hasTag('setup') then
+      getObjectFromGUID('077454').call('addContextMenu', {object, 'leaveBag'})
+    end
+  end
+  
   unpackBag(scenarioBag)
 
-  Wait.frames(
-    function()
-      function onObjectLeaveContainer(container, object)
-        if object.hasTag('Monsters') == 'Monsters' and container ~= monsterDeck then
-          getObjectFromGUID('85fc44').call('spawnMonster', object)
-        end
-
-        if object.hasTag('Doom') then
-          getObjectFromGUID('077454').call('spreadDoom', {object, 'setupBag'})
-        end
-
-        if object.getName() == 'Doom' then
-          getObjectFromGUID('077454').call('addContextMenu', {object, 'leaveBag'})
-        end
-      end
-    end, 64
-  )
 
   if headlinesToken ~= null then
     setHeadlines(headlinesToken.getDescription())
@@ -330,7 +331,7 @@ function unpackBag(scenarioBag)
 
                 if item.getName() == 'Mythos Cup' then mythosCup = item addButtonsToMythosCup(item.getGUID()) end
                 if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
-                if item.getName() == 'Event' then eventDeck = getObjectFromGUID(item.getGUID()) end
+                if item.getName() == 'Event' then print('y') eventDeck = getObjectFromGUID(item.getGUID()) end
                 if item.getName() == 'Headlines' then headlinesToken = getObjectFromGUID(item.getGUID()) end
                 break
               end
