@@ -229,13 +229,9 @@ function buttonClick_place(scenarioBag)
     if object.hasTag('Doom') and object.hasTag('setup') then
       Wait.frames(
         function()
-          getObjectFromGUID('077454').call('spreadDoom', {object, 'setupBag'}) 
+          getObjectFromGUID('077454').call('spreadDoom', object) 
         end, 64 
       )
-    end
-
-    if object.getName() == 'Doom' and not object.hasTag('setup') then
-      getObjectFromGUID('077454').call('addContextMenu', {object, 'leaveBag'})
     end
   end
   
@@ -331,7 +327,7 @@ function unpackBag(scenarioBag)
 
                 if item.getName() == 'Mythos Cup' then mythosCup = item addButtonsToMythosCup(item.getGUID()) end
                 if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
-                if item.getName() == 'Event' then print('y') eventDeck = getObjectFromGUID(item.getGUID()) end
+                if item.getName() == 'Event' then eventDeck = getObjectFromGUID(item.getGUID()) end
                 if item.getName() == 'Headlines' then headlinesToken = getObjectFromGUID(item.getGUID()) end
                 break
               end
