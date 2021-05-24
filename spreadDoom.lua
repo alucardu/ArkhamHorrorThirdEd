@@ -1,20 +1,24 @@
 discardDeck = nil
 
 function spreadDoom(doomToken)
-  someVal = doomToken[2]
+  setup = doomToken.hasTag('setup')
+
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')
-
   eventDeckPos = eventDeck.getPosition()
   doomPos = {x = eventDeckPos.x + 4, y = eventDeckPos.y, z = eventDeckPos.z}
+
+  if setup == false then
+    eventCard = eventDeck.takeObject({index = eventDeck.getQuantity() - 1})
+  end
+
+
   if 
     doomToken[2] == 'setup' or
     doomToken[2] == 'mythos' or
     doomToken == nil 
   then
-    takenObject = eventDeck.takeObject({
-      index = eventDeck.getQuantity() - 1,
-    })
+    
   
     if discardDeck == nil then
       print('Event discard deck is empty')
@@ -31,7 +35,8 @@ function spreadDoom(doomToken)
     end
   
     for i, deck in ipairs(neighborhoodTiles) do
-      if takenObject.getTags()[1] == deck.getTags()[1] then
+      if deck.hasTag(eventCard)
+      if takenObject.getTags()[1] ==  then
         neighborhoodPosition = deck.getPosition()
       end
     end

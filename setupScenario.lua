@@ -233,8 +233,9 @@ function buttonClick_place(scenarioBag)
           getObjectFromGUID('85fc44').call('spawnMonster', object)
         end
 
-        if object.getTags()[1] == 'Doom' then
-          getObjectFromGUID('077454').call('spreadDoom', {object, 'setupBag'})
+        if object.hasTag('Doom') then
+          -- Drawn from setup bag
+          getObjectFromGUID('077454').call('spreadDoom', object)
         end
 
         if object.getName() == 'Doom' then
@@ -288,7 +289,7 @@ function buttonClick_place(scenarioBag)
 
   Wait.frames(
     function()
-      getObjectFromGUID('077454').call('spreadDoom', {{}, 'setup'})
+      getObjectFromGUID('077454').call('spreadDoom')
     end, 96
   )
 
