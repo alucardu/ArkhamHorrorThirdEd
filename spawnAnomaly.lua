@@ -1,5 +1,5 @@
 function spawnAnomaly(anomalyToken)
-  if anomalyToken[3].getTags()[2] == 'Neighborhood' then
+  if anomalyToken[3].hasTag('Neighborhood Tile') then
      anomalyToken = getObjectFromGUID('b27518').takeObject({
        position={x=anomalyToken[3].getPosition().x,y=anomalyToken[3].getPosition().y + 2,z=anomalyToken[3].getPosition().z}
      })

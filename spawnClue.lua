@@ -1,3 +1,13 @@
+
+neighborhoodTags = {
+  'Rivertown',
+  'Downtown',
+  'Northside',
+  'Easttown',
+  'Merchant District',
+  'Miskatonic University'
+}
+
 spawnClueBtn = getObjectFromGUID('98bc78')
 
 function onLoad()
@@ -30,7 +40,7 @@ function spawnClue(amount)
   eventCard = eventDeck.takeObject({position = pos})
 
   for i, deck in ipairs(neighborhoodDecks) do
-    if eventCard.getTags()[1] == deck.getTags()[1] then
+    if deck.hasTag(returnNeighbordhoodTag(eventCard)) then
       neighborhoodDeck = deck
       neighborhoodDeckPos = neighborhoodDeck.getPosition()
     end
@@ -59,7 +69,7 @@ function toDeck(neighborhoodCards, amount)
 end
 function spawnToken(eventCard)
   for i, neighborhoodTile in ipairs(neighborhoodTiles) do
-    if eventCard.getTags()[1] == neighborhoodTile.getTags()[1] then
+    if neighborhoodTile.hasTag(returnNeighbordhoodTag(eventCard)) then
       neighborhoodPosition = neighborhoodTile.getPosition()
     end
   end
@@ -72,9 +82,16 @@ end
 
 function setData()
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
+  print(eventDeck)
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')
   neighborhoodDecks = getObjectFromGUID('3e1179').getTable('neighborhoodDecks')
   deckPos = eventDeck.getPosition()
   pos = {x = deckPos.x, y = deckPos.y, z = deckPos.z + - 5}
   clueTokenBag = getObjectFromGUID('c896e0')
+end
+
+function returnNeighbordhoodTag(encounterCard)
+  for _, neighborhoodTag in ipairs(neighborhoodTags) do
+    if encounterCard.hasTag(neighborhoodTag) then return neighborhoodTag end
+  end
 end
