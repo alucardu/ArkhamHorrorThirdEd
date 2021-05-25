@@ -60,7 +60,7 @@ function draw_mythos_token(obj)
   table.insert(drawnMythosTokens, takenObject)
 
   if takenObject.hasTag('Doom') then getObjectFromGUID('077454').call('spreadDoom') end
-  if takenObject.hasTag('Read Headlines') then getObjectFromGUID('4e81c7').call('readHeadline') end
+  if takenObject.hasTag('Read Headlines') then getObjectFromGUID('3e1179').getVar('readHeadlinesToken').call('readHeadline') end
   if takenObject.hasTag('Blank') then getObjectFromGUID('50363f').call('blank') end 
   if takenObject.hasTag('Spawn Monster') then getObjectFromGUID('0d44f6').call('spawnMonster') end
   if takenObject.hasTag('Spawn Clue') then getObjectFromGUID('98bc78').call('spawnClue') end
