@@ -1,15 +1,14 @@
 function onLoad()
-  spawnClueBtn = getObjectFromGUID('98bc78')
-
   local params = {
     click_function="spawnClue",
+    tooltip="Spawn a clue",
     function_owner = self,
     height=1250,
     width=1250,
     color={0, 0, 0, 0},
     position={0, 0.1, 0}
   }
-  spawnClueBtn.createButton(params)
+  self.createButton(params)
   
   neighborhoodTags = {
     'Rivertown',

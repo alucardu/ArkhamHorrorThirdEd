@@ -223,7 +223,10 @@ function buttonClick_place(scenarioBag)
 
   function onObjectLeaveContainer(container, object)
     if object.hasTag('Monsters') and container ~= monsterDeck then
-      getObjectFromGUID('85fc44').call('spawnMonster', object)
+      Wait.frames(
+        function() getObjectFromGUID('0d44f6').call('spawnMonster', object)
+        end, 64
+      )
     end
 
     if object.hasTag('Doom') and object.hasTag('setup') then
@@ -273,7 +276,8 @@ function buttonClick_place(scenarioBag)
   )
 
   Wait.frames(
-    function() for i = 3 , 1, -1 do getObjectFromGUID('3e54de').call('spawnClue') end end, 64
+    function() for i = 3 , 1, -1 do getObjectFromGUID('98bc78').call('spawnClue') end 
+    end, 64
   )
 
   Wait.frames(
@@ -323,7 +327,7 @@ function unpackBag(scenarioBag)
                 if item.hasTag('Street') then table.insert(streetTiles, item) end
                 if item.hasTag('Anomalies') then anomaliesDeck = item end
 
-                if item.getName() == 'Mythos Cup' then mythosCup = item addButtonsToMythosCup(item.getGUID()) end
+                if item.getName() == 'Mythos Cup' then mythosCup = item end
                 if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
                 if item.getName() == 'Event' then eventDeck = getObjectFromGUID(item.getGUID()) end
                 if item.getName() == 'Headlines' then headlinesToken = getObjectFromGUID(item.getGUID()) end
@@ -411,25 +415,6 @@ end
 function round(num, dec)
   local mult = 10^(dec or 0)
   return math.floor(num * mult + 0.5) / mult
-end
-
-function addButtonsToMythosCup(guid)
-  cup = getObjectFromGUID(guid)
-
-  params = {
-    label="Draw Mythos Token",
-    click_function="draw_mythos_token",
-    function_owner=getObjectFromGUID('6f210b'),
-    position={0,0.3,-2},
-    rotation={0,180,0},
-    height=350,
-    width=800,
-    font_size=250,
-    color={0,0,0},
-    font_color={1,1,1}
-  }
-
-  cup.createButton(params)
 end
 
 function setHeadlines(amount)

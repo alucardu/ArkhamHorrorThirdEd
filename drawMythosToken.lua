@@ -1,15 +1,41 @@
-posXToken = -35
 posZToken = 0
 drawnMythosTokens = {}
 mythosCounter = 0
 
+function onObjectLeaveContainer(container, leave_object)
+  if leave_object.hasTag('Mythos Cup') then
+    local params = {
+      label="Draw Mythos Token",
+      click_function="draw_mythos_token",
+      function_owner=self,
+      position={0,0.3,-2},
+      rotation={0,180,0},
+      height=350,
+      width=800,
+      font_size=250,
+      color={0,0,0},
+      font_color={1,1,1}
+    }
+  
+    leave_object.createButton(params)
+  end
+end
+
 function draw_mythos_token(obj)
+  if mythosCupPos == null then 
+    mythosCupPos = getObjectFromGUID('3e1179').getVar('mythosCup').getPosition()
+    mythosCupPos = {
+      x=mythosCupPos.x + 4,
+      y=mythosCupPos.y,
+      z=mythosCupPos.z
+    }
+  end
+
   ui = UI.getXmlTable()
   numberOfInvestigators = ui[1].children[2].children
-  posXToken = posXToken + 0.4
+  mythosCupPos.x = mythosCupPos.x + 0.4
 
   if obj.getQuantity() == 0 then
-    posXToken = -35
     posZToken = 0
 
     for i, mythosToken in ipairs(drawnMythosTokens) do
@@ -20,39 +46,40 @@ function draw_mythos_token(obj)
 
     drawnMythosTokens = {}
     obj.shuffle()
-    obj.shuffle()
-    obj.shuffle()
-    obj.shuffle()
     return
   end
 
   local takenObject = obj.takeObject({
-    position = {x = posXToken, y = 2, z = posZToken},
+    position = {
+      x=mythosCupPos.x,
+      y=2,
+      z=posZToken
+    }
   })
 
   table.insert(drawnMythosTokens, takenObject)
 
   if takenObject.hasTag('Doom') then getObjectFromGUID('077454').call('spreadDoom') end
-  if takenObject.getName() == 'Read Headline' then getObjectFromGUID('4e81c7').call('readHeadline') end
-  if takenObject.getName() == 'Blank' then getObjectFromGUID('50363f').call('blank') end 
-  if takenObject.getName() == 'Spawn Monster' then getObjectFromGUID('85fc44').call('spawnMonster') end
-  if takenObject.getName() == 'Spawn Clue' then getObjectFromGUID('3e54de').call('spawnClue') end
-  if takenObject.getName() == 'Gate Burst' then getObjectFromGUID('f3944a').call('gateBurst') end
-  if takenObject.getName() == 'Reckoning' then getObjectFromGUID('432f00').call('reckoning') end 
-  if takenObject.getName() == 'Spread Terror' then getObjectFromGUID('02db23').call('spreadTerror') end
+  if takenObject.hasTag('Read Headlines') then getObjectFromGUID('4e81c7').call('readHeadline') end
+  if takenObject.hasTag('Blank') then getObjectFromGUID('50363f').call('blank') end 
+  if takenObject.hasTag('Spawn Monster') then getObjectFromGUID('0d44f6').call('spawnMonster') end
+  if takenObject.hasTag('Spawn Clue') then getObjectFromGUID('98bc78').call('spawnClue') end
+  if takenObject.hasTag('Gate Burst') then getObjectFromGUID('151eec').call('gateBurst') end
+  if takenObject.hasTag('Reckoning') then getObjectFromGUID('432f00').call('reckoning') end 
+  if takenObject.hasTag('Spread Terror') then getObjectFromGUID('02db23').call('spreadTerror') end
 
   mythosCounter = mythosCounter + 1
-  broadcastToAll('Mythostokens ' .. mythosCounter .. ' of 2 drawn', {0, 1, 0})
+  broadcastToAll('Mythostokens ' .. mythosCounter .. ' of ' .. #numberOfInvestigators * 2 .. ' drawn', {0, 1, 0})
 
   for i = 1, #numberOfInvestigators, 1 do    
     if mythosCounter == i*2 then
-      posXToken = posXToken + 1.5
+      mythosCupPos.x = mythosCupPos.x + 1.5
     end
   end
 
   if mythosCounter == #numberOfInvestigators * 2 then
     mythosCounter = 0
-    posXToken = - 35
+    mythosCupPos.x = mythosCupPos.x - #numberOfInvestigators * 2.3
     posZToken = posZToken - 1.5
   end
 

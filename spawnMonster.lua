@@ -1,7 +1,5 @@
-spawnMonsterBtn = getObjectFromGUID('0d44f6')
-
 function onLoad()
-  params = {
+  local params = {
     click_function="spawnMonster",
     tooltip="Spawn a monster",
     function_owner = self,
@@ -10,7 +8,7 @@ function onLoad()
     color={0, 0, 0, 0},
     position={0, 0.1, 0}
   }
-  spawnMonsterBtn.createButton(params)
+  self.createButton(params)
 end
 
 function spawnMonster(spawnedMonster)

@@ -70,4 +70,6 @@ function setDifficulty(difficuly)
     mythosCup.putObject(doomToken)
     broadcastToAll('Replaced a Blank mythos token with a Doom mythos token in the mythos cup.', {0, 1, 0})
   end
+
+  mythosCup.shuffle()
 end
