@@ -273,9 +273,7 @@ function buttonClick_place(scenarioBag)
   )
 
   Wait.frames(
-    function()
-      getObjectFromGUID('3e54de').call('spawnClue', 3)
-    end, 64
+    function() for i = 3 , 1, -1 do getObjectFromGUID('3e54de').call('spawnClue') end end, 64
   )
 
   Wait.frames(
