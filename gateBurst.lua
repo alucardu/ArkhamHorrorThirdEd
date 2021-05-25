@@ -1,5 +1,3 @@
-gateBurstBtn = getObjectFromGUID('151eec')
-
 function onLoad()
   local params = {
     click_function="gateBurst",
@@ -10,7 +8,7 @@ function onLoad()
     color={0, 0, 0, 0},
     position={0, 0.1, 0}
   }
-  gateBurstBtn.createButton(params)
+  self.createButton(params)
 
   neighborhoodTags = {
     'Rivertown',
