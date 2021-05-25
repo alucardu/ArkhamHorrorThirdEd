@@ -74,7 +74,10 @@ function spawnToken(eventCard)
     end
   end
   clueTokenBag.takeObject({
-    position={x=neighborhoodPosition.x, y=neighborhoodPosition.y + 5, z=neighborhoodPosition.z}
+    position={
+      x=neighborhoodPosition.x,
+      y=neighborhoodPosition.y + 5,
+      z=neighborhoodPosition.z}
   })
 
   broadcastToAll('Clue spawned on ' .. neighborhoodDeck.getTags()[1] , {0, 1, 0})
