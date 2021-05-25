@@ -240,11 +240,6 @@ function buttonClick_place(scenarioBag)
   
   unpackBag(scenarioBag)
 
-
-  if headlinesToken ~= null then
-    setHeadlines(headlinesToken.getDescription())
-  end
-
   for i,o in ipairs(neighborhoodTiles) do
     local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
     o.addContextMenuItem('Draw encounter', func)
@@ -268,13 +263,7 @@ function buttonClick_place(scenarioBag)
       shuffleAllDecks()
     end, 32
   )
-
-  Wait.frames(
-    function()
-      mythosCup.shuffle()
-    end, 32
-  )
-
+  
   Wait.frames(
     function() for i = 3 , 1, -1 do getObjectFromGUID('98bc78').call('spawnClue') end 
     end, 64
@@ -326,11 +315,11 @@ function unpackBag(scenarioBag)
                 if item.hasTag('Neighborhood Tile') then table.insert(neighborhoodTiles, item) end
                 if item.hasTag('Street') then table.insert(streetTiles, item) end
                 if item.hasTag('Anomalies') then anomaliesDeck = item end
-
-                if item.getName() == 'Mythos Cup' then mythosCup = item end
+                if item.hasTag('Read Headlines') then readHeadlinesToken = item end
+                if item.hasTag('Mythos Cup') then mythosCup = item end
+                
                 if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
                 if item.getName() == 'Event' then eventDeck = getObjectFromGUID(item.getGUID()) end
-                if item.getName() == 'Headlines' then headlinesToken = getObjectFromGUID(item.getGUID()) end
                 break
               end
           end
@@ -416,31 +405,3 @@ function round(num, dec)
   local mult = 10^(dec or 0)
   return math.floor(num * mult + 0.5) / mult
 end
-
-function setHeadlines(amount)
-  headlinesDeckRef = getObjectFromGUID('f9b203')
-  headlinesDeck = headlinesDeckRef
-  
-  headlinesDeckPos = headlinesDeck.getPosition()
-  headlinesDeckPos = {x = headlinesDeckPos.x - 0.2, y = headlinesDeckPos.y, z = headlinesDeckPos.z - 15}
-  headlinesDeck.shuffle()
-  headlinesDeck.shuffle()
-  headlinesDeck.shuffle()
-
-  headlinesDeck = headlinesDeck.cut(tonumber(amount))
-  
-  Wait.frames(
-    function()
-      headlinesDeck = headlinesDeck[2]
-      headlinesDeck.setPositionSmooth(
-        headlinesDeckPos
-      )
-      headlinesDeck.setRotationSmooth(
-        {180, 0, 0}
-      )
-      headlinesDeck.shuffle()
-      headlinesToken = nil
-    end,
-    64
-  )
-end 
