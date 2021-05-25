@@ -9,7 +9,8 @@ function onLoad()
     'Merchant District',
     'Miskatonic University'
   }
-  discardDeck = {}
+
+  discardDeck = nil
 end
 
 -- Called when a Doom token leaves the Doom token container
@@ -27,9 +28,16 @@ function spreadDoom(doomToken)
   --Called from scenario setup steps or Mythos Cup
   if doomToken == nil then
     eventCard = returnEventCard()
-    addToDiscardPile(eventCard)
-    neighborhood = returnNeighborhoodTag(eventCard)
-    neighborhoodTilePosition = returnNeighborhoodTile(neighborhood).getPosition()
+
+    Wait.condition(
+      function()addToDiscardPile(eventCard) end, 
+      || not eventCard.isSmoothMoving()
+    )
+
+    neighborhoodTag = returnNeighborhoodTag(eventCard)
+    neighborhoodTilePosition = returnNeighborhoodTile(neighborhoodTag).getPosition()
+  
+    --Spawn Doom token on the assigned neighborhood tile
     doomToken = doomTokenBag.takeObject()
     doomToken.setPositionSmooth({
       x=neighborhoodTilePosition.x,
@@ -39,12 +47,13 @@ function spreadDoom(doomToken)
     return
   end
 
-  -- Called from scenario setup bag
+  --Called from scenario setup bag
   if doomToken.hasTag('Setup') then
     addContextMenu(doomToken) 
   end
 end
 
+--Helper functions
 function addContextMenu(doomToken)
   local func = function() removeDoomToken(doomToken) end
   doomToken.addContextMenuItem('Remove doom', func)  
@@ -76,14 +85,18 @@ function returnNeighborhoodTag(encounterCard)
   end
 end
 
-function returnNeighborhoodTile(neighborhood)
-    for i, tile in ipairs(neighborhoodTiles) do
-    if tile.hasTag(neighborhood)then
+function returnNeighborhoodTile(neighborhoodTag)
+  for _, tile in ipairs(neighborhoodTiles) do
+    if tile.hasTag(neighborhoodTag)then
       return tile
     end
   end
 end
 
 function addToDiscardPile(eventCard)
-  table.insert(discardDeck, eventCard)
+  if discardDeck == nil then
+    discardDeck = eventCard
+    else
+      discardDeck = discardDeck.putObject(eventCard)
+  end
 end
