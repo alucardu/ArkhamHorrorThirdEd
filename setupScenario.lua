@@ -224,7 +224,7 @@ function buttonClick_place(scenarioBag)
   function onObjectLeaveContainer(container, object)
     if object.hasTag('Monsters') and container ~= monsterDeck then
       Wait.frames(
-        function() getObjectFromGUID('0d44f6').call('spawnMonster', object)
+        function() getObjectFromGUID('0d44f6').call('addMonster', object)
         end, 64
       )
     end
@@ -306,11 +306,17 @@ function unpackBag(scenarioBag)
                     position=entry.pos,
                     rotation=entry.rot,
                   })
-                if item.hasTag('setup') then
-                  item.setPositionSmooth({x=entry.pos.x, y=entry.pos.y + 5, z=entry.pos.z})
-                end
-                item.setLock(entry.lock)
 
+                  if item.hasTag('Setup') then
+                  item.setPositionSmooth(
+                    {
+                      x=entry.pos.x,
+                      y=entry.pos.y + 5,z=entry.pos.z
+                    })
+                end
+
+                Wait.condition(function() item.setLock(entry.lock) end, || item.resting)
+                
                 if item.hasTag('Neighborhood Deck') then table.insert(neighborhoodDecks, item) end
                 if item.hasTag('Neighborhood Tile') then table.insert(neighborhoodTiles, item) end
                 if item.hasTag('Street') then table.insert(streetTiles, item) end

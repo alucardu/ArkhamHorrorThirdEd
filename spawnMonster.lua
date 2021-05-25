@@ -1,6 +1,6 @@
 function onLoad()
   local params = {
-    click_function="spawnMonster",
+    click_function='spawnMonster',
     tooltip="Spawn a monster",
     function_owner = self,
     height=1250,
@@ -11,17 +11,19 @@ function onLoad()
   self.createButton(params)
 end
 
-function spawnMonster(spawnedMonster)
+function spawnMonster()
   monsterDeck = getObjectFromGUID('3e1179').getVar('monsterDeck')
   monsterDeckPos = monsterDeck.getPosition()
   
-  if spawnedMonster == nil or spawnedMonster.getTags()[1] == nil then
-    spawnedMonster = monsterDeck.takeObject({
-      position = {x = monsterDeckPos.x + 2.5, y = monsterDeckPos.y, z = monsterDeckPos.z},
-      index=monsterDeck.getQuantity() - 1
-    })
-  end
-  
+  spawnedMonster = monsterDeck.takeObject({
+    position = {x = monsterDeckPos.x + 2.5, y = monsterDeckPos.y, z = monsterDeckPos.z},
+    index=monsterDeck.getQuantity() - 1
+  })
+
+  addMonster(spawnedMonster)
+end
+
+function addMonster(spawnedMonster)
   investigatorsObj = getObjectFromGUID('69581b')
   investigatorsObj.setVar('monsters', spawnedMonster)
   investigatorsObj.call('updateMonsters', {'spawned', spawnedMonster})
