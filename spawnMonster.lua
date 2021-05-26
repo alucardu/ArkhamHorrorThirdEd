@@ -33,6 +33,9 @@ function addMonster(spawnedMonster)
 end
 
 function defeatMonster(player_color, i, spawnedMonster)
+  monsterDeck = getObjectFromGUID('3e1179').getVar('monsterDeck')
+  monsterDeckPos = monsterDeck.getPosition()
+
   investigatorsObj.setVar('monsters', spawnedMonster)
   investigatorsObj.call('updateMonsters', {'defeated', spawnedMonster})
   spawnedMonster.setRotationSmooth({x=180, y=0, z=0})

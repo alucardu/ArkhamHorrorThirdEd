@@ -224,7 +224,7 @@ function buttonClick_place(scenarioBag)
   function onObjectLeaveContainer(container, object)
     if object.hasTag('Monsters') and container ~= monsterDeck then
       Wait.frames(
-        function() getObjectFromGUID('0d44f6').call('addMonster', object)
+        function() spawnMonster.call('addMonster', object)
         end, 64
       )
     end
@@ -265,7 +265,7 @@ function buttonClick_place(scenarioBag)
   )
   
   Wait.frames(
-    function() for i = 3 , 1, -1 do getObjectFromGUID('98bc78').call('spawnClue') end 
+    function() for i = 3 , 1, -1 do spawnClue.call('spawnClue') end 
     end, 64
   )
 
@@ -321,8 +321,12 @@ function unpackBag(scenarioBag)
                 if item.hasTag('Neighborhood Tile') then table.insert(neighborhoodTiles, item) end
                 if item.hasTag('Street') then table.insert(streetTiles, item) end
                 if item.hasTag('Anomalies') then anomaliesDeck = item end
+
                 if item.hasTag('Read Headlines') then readHeadlinesToken = item end
                 if item.hasTag('Mythos Cup') then mythosCup = item end
+                if item.hasTag('Spawn Clue') then spawnClue = item end
+                if item.hasTag('Spawn Monster') then spawnMonster = item end
+                if item.hasTag('Gate Burst') then gateBurst = item end
                 
                 if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
                 if item.getName() == 'Event' then eventDeck = getObjectFromGUID(item.getGUID()) end

@@ -59,14 +59,17 @@ function draw_mythos_token(obj)
 
   table.insert(drawnMythosTokens, takenObject)
 
+  scenarioSetup = getObjectFromGUID('3e1179')
+
   if takenObject.hasTag('Doom') then getObjectFromGUID('077454').call('spreadDoom') end
-  if takenObject.hasTag('Read Headlines') then getObjectFromGUID('3e1179').getVar('readHeadlinesToken').call('readHeadline') end
-  if takenObject.hasTag('Blank') then getObjectFromGUID('50363f').call('blank') end 
-  if takenObject.hasTag('Spawn Monster') then getObjectFromGUID('0d44f6').call('spawnMonster') end
-  if takenObject.hasTag('Spawn Clue') then getObjectFromGUID('98bc78').call('spawnClue') end
-  if takenObject.hasTag('Gate Burst') then getObjectFromGUID('151eec').call('gateBurst') end
+  if takenObject.hasTag('Blank') then getObjectFromGUID('50363f').call('blank') end
   if takenObject.hasTag('Reckoning') then getObjectFromGUID('432f00').call('reckoning') end 
   if takenObject.hasTag('Spread Terror') then getObjectFromGUID('02db23').call('spreadTerror') end
+
+  if takenObject.hasTag('Read Headlines') then scenarioSetup.getVar('readHeadlinesToken').call('readHeadline') end
+  if takenObject.hasTag('Spawn Monster') then scenarioSetup.getVar('spawnMonster').call('spawnMonster') end
+  if takenObject.hasTag('Spawn Clue') then scenarioSetup.getVar('spawnClue').call('spawnClue') end
+  if takenObject.hasTag('Gate Burst') then scenarioSetup.getVar('gateBurst').call('gateBurst') end
 
   mythosCounter = mythosCounter + 1
   broadcastToAll('Mythostokens ' .. mythosCounter .. ' of ' .. #numberOfInvestigators * 2 .. ' drawn', {0, 1, 0})
