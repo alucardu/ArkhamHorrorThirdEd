@@ -1,5 +1,17 @@
-function onLoad() 
-  setHeadlines(self.getDescription())
+function onLoad(script_state)
+  local state = JSON.decode(script_state)
+
+  if state == nil then
+    setHeadlines(self.getDescription())
+  end
+
+end
+
+function onSave()
+  local state = {
+    isSet = true
+  }
+  return JSON.encode(state)
 end
 
 function setHeadlines(amount)
