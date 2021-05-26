@@ -2,28 +2,26 @@ posZToken = 0
 drawnMythosTokens = {}
 mythosCounter = 0
 
-function onObjectLeaveContainer(container, leave_object)
-  if leave_object.hasTag('Mythos Cup') then
-    local params = {
-      label="Draw Mythos Token",
-      click_function="draw_mythos_token",
-      function_owner=self,
-      position={0,0.3,-2},
-      rotation={0,180,0},
-      height=350,
-      width=800,
-      font_size=250,
-      color={0,0,0},
-      font_color={1,1,1}
-    }
-  
-    leave_object.createButton(params)
-  end
+function onLoad()
+  local params = {
+    label="Draw Mythos Token",
+    click_function="draw_mythos_token",
+    function_owner=self,
+    position={0,0.3,-2},
+    rotation={0,180,0},
+    height=350,
+    width=800,
+    font_size=250,
+    color={0,0,0},
+    font_color={1,1,1}
+  }
+
+  self.createButton(params)
 end
 
-function draw_mythos_token(obj)
+function draw_mythos_token()
   if mythosCupPos == null then 
-    mythosCupPos = getObjectFromGUID('3e1179').getVar('mythosCup').getPosition()
+    mythosCupPos = self.getPosition()
     mythosCupPos = {
       x=mythosCupPos.x + 4,
       y=mythosCupPos.y,
@@ -35,21 +33,21 @@ function draw_mythos_token(obj)
   numberOfInvestigators = ui[1].children[2].children
   mythosCupPos.x = mythosCupPos.x + 0.4
 
-  if obj.getQuantity() == 0 then
+  if self.getQuantity() == 0 then
     posZToken = 0
 
     for i, mythosToken in ipairs(drawnMythosTokens) do
       if mythosToken ~= nill then
-        obj.putObject(mythosToken)
+        self.putObject(mythosToken)
       end
     end
 
     drawnMythosTokens = {}
-    obj.shuffle()
+    self.shuffle()
     return
   end
 
-  local takenObject = obj.takeObject({
+  local takenObject = self.takeObject({
     position = {
       x=mythosCupPos.x,
       y=2,
