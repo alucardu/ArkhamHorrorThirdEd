@@ -1,4 +1,19 @@
-function onLoad()
+function onSave()
+  if discardDeck ~= nil then
+    local state = {
+      discardDeck = discardDeck.guid
+    }
+    return JSON.encode(state)
+  end
+end
+
+function onLoad(script_state)
+  discardDeck = nil
+  local state = JSON.decode(script_state)
+  if state ~= nil then
+    discardDeck = getObjectFromGUID(state.discardDeck)
+  end
+
   doomTokenBag = getObjectFromGUID('f807c7')
 
   neighborhoodTags = {
@@ -9,8 +24,6 @@ function onLoad()
     'Merchant District',
     'Miskatonic University'
   }
-
-  discardDeck = nil
 end
 
 -- Called when a Doom token leaves the Doom token container
