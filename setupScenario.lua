@@ -10,13 +10,46 @@ anomaliesDeck = {}
 monsterDeck = {}
 eventDeck = {}
 
+function onSave()
+  if #neighborhoodDecks > 0 then
+    local state = {
+      neighborhoodDecks = returnGuid(neighborhoodDecks),
+      neighborhoodTiles = returnGuid(neighborhoodTiles),
+      streetTiles = returnGuid(neighborhoodTiles),
+      readHeadlinesToken = readHeadlinesToken.guid,
+      anomaliesDeck = anomaliesDeck.guid,
+      spawnClue = spawnClue.guid,
+      spawnMonster = spawnMonster.guid,
+      gateBurst = gateBurst.guid,
+      monsterDeck = monsterDeck.guid,
+      eventDeck = eventDeck.guid
+    }
+    return JSON.encode(state)
+  end
+end
+
 function updateSave(scenarioBag)
   local data_to_save = {["ml"]=scenarioBag.getTable('memoryList')}
   saved_data = JSON.encode(data_to_save)
   scenarioBag.script_state = saved_data
 end
 
-function onload()
+function onLoad(script_state)
+
+  local state = JSON.decode(script_state)
+  if state ~= nil then
+    neighborhoodDecks = returnObj(state.neighborhoodDecks)
+    neighborhoodTiles = returnObj(state.neighborhoodTiles)
+    streetTiles = returnObj(state.streetTiles)
+    readHeadlinesToken = getObjectFromGUID(state.readHeadlinesToken)
+    anomaliesDeck = getObjectFromGUID(state.anomaliesDeck)
+    spawnClue = getObjectFromGUID(state.spawnClue)
+    spawnMonster = getObjectFromGUID(state.spawnMonster)
+    gateBurst = getObjectFromGUID(state.gateBurst)
+    monsterDeck = getObjectFromGUID(state.monsterDeck)
+    eventDeck = getObjectFromGUID(state.eventDeck)
+  end
+
 
   for i, scenarioBag in ipairs(scenarios) do
     zxc = scenarioBag
@@ -414,4 +447,36 @@ end
 function round(num, dec)
   local mult = 10^(dec or 0)
   return math.floor(num * mult + 0.5) / mult
+end
+
+function mapObj(tbl, func)
+  local t = {}
+  for k, v in ipairs(tbl) do
+    t[k] = getObjectFromGUID(v)
+  end
+  return t
+end
+
+function map(tbl, func)
+  local t = {}
+  for k,v in pairs(tbl) do
+    t[k] = func(v)
+  end
+  return t
+end
+
+function returnGuid(tbl)
+  local t = {}
+  for i, v in ipairs(tbl) do
+    t[i] = v.guid
+  end
+  return t
+end
+
+function returnObj(tbl)
+  local t = {}
+  for i, v in ipairs(tbl) do
+    t[i] = getObjectFromGUID(v)
+  end
+  return t
 end

@@ -3,13 +3,18 @@ function onLoad(script_state)
 
   if state == nil then
     setHeadlines(self.getDescription())
+    else
+      headlinesDeck = getObjectFromGUID(state.headlinesDeck)
+      headlinesDeckPos = headlinesDeck.getPosition()
   end
-
 end
 
 function onSave()
+  -- print('x')
+  -- local state = nil
   local state = {
-    isSet = true
+    isSet = true,
+    headlinesDeck = headlinesDeck.guid
   }
   return JSON.encode(state)
 end
@@ -59,7 +64,8 @@ function readHeadline()
       {
         x=headlinesDeckPos.x + 3,
         y=headlinesDeckPos.y + 5,
-        z=headlinesDeckPos.z }
+        z=headlinesDeckPos.z 
+      }
     )
     Wait.condition(
       function() lastCard.setRotationSmooth({0, 180, 0}) end,

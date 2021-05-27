@@ -14,7 +14,27 @@ function onObjectSearchEnd()
   UI.setAttribute('top', 'active', 'true')
 end
 
-function onLoad()
+function onSave()
+  local state = {
+    xmlTable = UI.getXmlTable(),
+    children = children,
+    monstersTable = monstersTable,
+    currentTurn = currentTurn
+  }
+  return JSON.encode(state)
+end
+
+function onLoad(script_state)
+
+  local state = JSON.decode(script_state)
+  if state ~= nil then
+    UI.setXmlTable(state.xmlTable)
+    children = state.children
+    monstersTable = state.monstersTable
+    currentTurn = state.currentTurn
+    return
+  end  
+
   container = {
     {
       tag="VerticalLayout",

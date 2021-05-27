@@ -1,6 +1,6 @@
 healthTokens = {
   '4d1c83',
-  'a8f895',
+  '44d051',
   '2767a6',
   'ff446b',
   'e9e423',
@@ -95,7 +95,29 @@ moneyTokens = {
 MIN_VALUE = 0
 MAX_VALUE = 30
 
-function onload(saved_data)
+someArray = {}
+
+function onSave()
+
+  state = {
+    healthTokens = getValues(healthTokens),
+    sanityTokens = getValues(sanityTokens),
+    moneyTokens = getValues(moneyTokens)
+  }
+
+  return JSON.encode(state)
+
+end
+
+function onLoad(script_state)
+
+  local state = JSON.decode(script_state)
+  if state ~= nil then
+    setValues(state.healthTokens)
+    setValues(state.sanityTokens)
+    setValues(state.moneyTokens)
+  end
+
   createButtons(healthTokens, {1,0,0,255})
   createButtons(sanityTokens, {0,0,1,255})
   createButtons(moneyTokens, {0.192, 0.312, 0.168,255})
@@ -103,21 +125,10 @@ end
 
 function createButtons(tokens, font_color)
   for index, tokenGUID in ipairs(tokens) do
-    healthToken = getObjectFromGUID(tokenGUID)
-    saved_data = getObjectFromGUID(tokenGUID).script_state
-
-    if saved_data ~= "" then
-      local loaded_data = JSON.decode(saved_data)
-      --Set up information off of loaded_data
-      healthToken.setVar('value', loaded_data[1])
-    else
-        --Set up information for if there is no saved saved data
-        value = 0
-    end
-
+    token = getObjectFromGUID(tokenGUID)
 
     params = {
-      label=tostring(healthToken.getVar('value')),
+      label=tostring(token.getVar('value')),
       click_function="click_func",
       function_owner = self,
       position={0,0.1,0.2},
@@ -129,7 +140,7 @@ function createButtons(tokens, font_color)
       color = {0,0,0,0}
     }
   
-    healthToken.createButton(params)
+    token.createButton(params)
   end
 end
 
@@ -139,7 +150,6 @@ function click_func(obj, player_clicker_color, alt_click)
   if obj.getVar('value') ~= new_value then
     obj.setVar('value', new_value)
     updateDisplay(obj)
-    updateSave(obj)
   end
 end
 
@@ -147,8 +157,16 @@ function updateDisplay(obj)
   obj.editButton({index = 0, label = tostring(obj.getVar('value'))})
 end
 
-function updateSave(obj)
-  local data_to_save = {value}
-  saved_data = JSON.encode(data_to_save)
-  obj.script_state = saved_data
+function getValues(tokens)
+  local t = {}
+  for i, token in ipairs(tokens) do
+    t[i] = {token, getObjectFromGUID(token).getVar('value')}
+  end
+  return t
+end
+
+function setValues(tokens)
+  for i, token in ipairs(tokens) do
+    getObjectFromGUID(token[1]).setVar('value', token[2])
+  end
 end

@@ -1,8 +1,28 @@
 posZToken = 0
-drawnMythosTokens = {}
+posXToken = 0
 mythosCounter = 0
+state = {}
+drawnMythosTokens = {}
 
-function onLoad()
+function onSave()
+  local state = {
+    posZToken = posZToken,
+    posXToken = posXToken,
+    mythosCounter = mythosCounter,
+    drawnMythosTokens = drawnMythosTokens
+  }
+  return JSON.encode(state)
+end
+
+function onLoad(script_state)
+  local state = JSON.decode(script_state)
+  if state ~= nil then
+    posXToken = state.posXToken
+    posZToken = state.posZToken
+    mythosCounter = state.mythosCounter
+    drawnMythosTokens = state.drawnMythosTokens
+  end
+
   local params = {
     label="Draw Mythos Token",
     click_function="draw_mythos_token",
@@ -20,7 +40,7 @@ function onLoad()
 end
 
 function draw_mythos_token()
-  if mythosCupPos == null then 
+  if mythosCupPos == null then
     mythosCupPos = self.getPosition()
     mythosCupPos = {
       x=mythosCupPos.x + 4,
@@ -31,14 +51,18 @@ function draw_mythos_token()
 
   ui = UI.getXmlTable()
   numberOfInvestigators = ui[1].children[2].children
-  mythosCupPos.x = mythosCupPos.x + 0.4
+  if posXToken ~= 0 then
+    mythosCupPos.x = posXToken + 0.4
+    else
+      mythosCupPos.x = mythosCupPos.x + 0.4
+  end
 
   if self.getQuantity() == 0 then
     posZToken = 0
 
     for i, mythosToken in ipairs(drawnMythosTokens) do
-      if mythosToken ~= nill then
-        self.putObject(mythosToken)
+      if getObjectFromGUID(mythosToken) ~= nill then
+        self.putObject(getObjectFromGUID(mythosToken))
       end
     end
 
@@ -55,7 +79,8 @@ function draw_mythos_token()
     }
   })
 
-  table.insert(drawnMythosTokens, takenObject)
+  posXToken = mythosCupPos.x
+  table.insert(drawnMythosTokens, takenObject.guid)
 
   scenarioSetup = getObjectFromGUID('3e1179')
 
@@ -75,6 +100,7 @@ function draw_mythos_token()
   for i = 1, #numberOfInvestigators, 1 do    
     if mythosCounter == i*2 then
       mythosCupPos.x = mythosCupPos.x + 1.5
+      posXToken = mythosCupPos.x
     end
   end
 
@@ -82,6 +108,7 @@ function draw_mythos_token()
     mythosCounter = 0
     mythosCupPos.x = mythosCupPos.x - #numberOfInvestigators * 2.3
     posZToken = posZToken - 1.5
+    posXToken = mythosCupPos.x
   end
 
 end
