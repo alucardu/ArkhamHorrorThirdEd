@@ -306,6 +306,8 @@ function buttonClick_place(scenarioBag)
   Wait.frames(
     function()
       selectDifficulty()
+      getObjectFromGUID('1b9f8c').call('placeItems', 5)
+      readHeadlinesToken.call('setHeadlines', readHeadlinesToken.getDescription())
       setupDone = true
     end, 512
   )
