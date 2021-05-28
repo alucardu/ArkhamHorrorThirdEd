@@ -19,10 +19,6 @@ function onLoad(script_state)
   allyDeck.shuffle()
 
   itemDeckPos = itemDeck.getPosition()
-  if setupDone ~= true then
-    placeItems(5)
-  end
-
   state = JSON.decode(script_state)
 
   if state ~= nil then

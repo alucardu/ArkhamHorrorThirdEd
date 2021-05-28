@@ -2,11 +2,9 @@ function onLoad(script_state)
 
   local state = JSON.decode(script_state)
   setupDone = getObjectFromGUID('3e1179').getVar('setupDone')
-  if setupDone ~= true then
-    setHeadlines(self.getDescription())
-    else
-      headlinesDeck = getObjectFromGUID(state.headlinesDeck)
-      headlinesDeckPos = headlinesDeck.getPosition()
+  if setupDone == true then
+    headlinesDeck = getObjectFromGUID(state.headlinesDeck)
+    headlinesDeckPos = headlinesDeck.getPosition()
   end
 end
 
