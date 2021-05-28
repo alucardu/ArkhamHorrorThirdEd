@@ -1,7 +1,8 @@
 function onLoad(script_state)
-  local state = JSON.decode(script_state)
 
-  if state == nil then
+  local state = JSON.decode(script_state)
+  setupDone = getObjectFromGUID('3e1179').getVar('setupDone')
+  if setupDone ~= true then
     setHeadlines(self.getDescription())
     else
       headlinesDeck = getObjectFromGUID(state.headlinesDeck)
@@ -10,13 +11,12 @@ function onLoad(script_state)
 end
 
 function onSave()
-  -- print('x')
-  -- local state = nil
-  local state = {
-    isSet = true,
-    headlinesDeck = headlinesDeck.guid
-  }
-  return JSON.encode(state)
+  if headlinesDeck ~= nil then
+    local state = {
+      headlinesDeck = headlinesDeck.guid
+    }
+    return JSON.encode(state)
+  end
 end
 
 function setHeadlines(amount)

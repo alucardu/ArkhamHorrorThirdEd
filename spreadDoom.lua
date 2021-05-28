@@ -29,6 +29,7 @@ end
 -- Called when a Doom token leaves the Doom token container
 function onObjectLeaveContainer(container, doom_token)
   if container == doomTokenBag then
+    doom_token.addTag('Doom')
     addContextMenu(doom_token)
   end
 end
@@ -49,14 +50,28 @@ function spreadDoom(doomToken)
 
     neighborhoodTag = returnNeighborhoodTag(eventCard)
     neighborhoodTilePosition = returnNeighborhoodTile(neighborhoodTag).getPosition()
-  
-    --Spawn Doom token on the assigned neighborhood tile
-    doomToken = doomTokenBag.takeObject()
-    doomToken.setPositionSmooth({
-      x=neighborhoodTilePosition.x,
-      y=neighborhoodTilePosition.y + 4,
-      z=neighborhoodTilePosition.z,
-    })
+
+    iteration = 1
+    if eventCard.hasTag('Number of Doom 2') then
+      iteration = 2
+    end
+    
+    for i = iteration , 1, -1 do
+      --Spawn Doom token on the assigned neighborhood tile
+      frames = i*32
+      Wait.frames(
+        function()
+          doomToken = doomTokenBag.takeObject()
+          doomToken.setPositionSmooth({
+            x=neighborhoodTilePosition.x,
+            y=neighborhoodTilePosition.y + 4,
+            z=neighborhoodTilePosition.z,
+          })
+          doomToken.addTag('Doom')
+        end, frames
+      )
+    end
+    broadcastToAll(iteration .. ' Doom spreaded on '  .. neighborhoodTag .. '!', {1, 0, 0})
     return
   end
 
@@ -64,6 +79,7 @@ function spreadDoom(doomToken)
   if doomToken.hasTag('Setup') then
     addContextMenu(doomToken) 
   end
+
 end
 
 --Helper functions

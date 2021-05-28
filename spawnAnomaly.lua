@@ -3,13 +3,11 @@ function spawnAnomaly(anomalyToken)
      anomalyToken = getObjectFromGUID('b27518').takeObject({
        position={x=anomalyToken[3].getPosition().x,y=anomalyToken[3].getPosition().y + 2,z=anomalyToken[3].getPosition().z}
      })
+     anomalyToken.addTag('Anomaly')
+     print(anomalyToken)
   end
 
-  local func = function(player_color) drawAnomalyEncounterCard(player_color, i, anomalyToken) end
-  anomalyToken.addContextMenuItem('Anomaly encounter', func)
-
-  local func = function(player_color) removeAnomalyToken(player_color, i, anomalyToken) end
-  anomalyToken.addContextMenuItem('Remove anomaly!', func)  
+  addContextMenu(anomalyToken)
 end
 
 function drawAnomalyEncounterCard(player_color, i, anomalyToken)
@@ -37,4 +35,12 @@ function discardAnomalyEncounterCard(player_color, i, anomalyCard)
   anomalyCard.setPosition({x=anomaliesDeckPos.x, y=anomaliesDeckPos.y, z=anomaliesDeckPos.z - 5})
   anomalyCard.setPositionSmooth({x=anomaliesDeckPos.x, y=anomaliesDeckPos.y - 0.1, z=anomaliesDeckPos.z})
   broadcastToAll('Returned anomaly card to the bottom of the anomaly deck', {1, 1, 1})
+end
+
+function addContextMenu(anomalyToken)
+  local func = function(player_color) drawAnomalyEncounterCard(player_color, i, anomalyToken) end
+  anomalyToken.addContextMenuItem('Anomaly encounter', func)
+
+  local func = function(player_color) removeAnomalyToken(player_color, i, anomalyToken) end
+  anomalyToken.addContextMenuItem('Remove anomaly!', func)  
 end

@@ -9,20 +9,22 @@ streetTiles= {}
 anomaliesDeck = {}
 monsterDeck = {}
 eventDeck = {}
+setupDone = false
 
 function onSave()
   if #neighborhoodDecks > 0 then
     local state = {
       neighborhoodDecks = returnGuid(neighborhoodDecks),
       neighborhoodTiles = returnGuid(neighborhoodTiles),
-      streetTiles = returnGuid(neighborhoodTiles),
+      streetTiles = returnGuid(streetTiles),
       readHeadlinesToken = readHeadlinesToken.guid,
       anomaliesDeck = anomaliesDeck.guid,
       spawnClue = spawnClue.guid,
       spawnMonster = spawnMonster.guid,
       gateBurst = gateBurst.guid,
       monsterDeck = monsterDeck.guid,
-      eventDeck = eventDeck.guid
+      eventDeck = eventDeck.guid,
+      setupDone = setupDone
     }
     return JSON.encode(state)
   end
@@ -48,8 +50,14 @@ function onLoad(script_state)
     gateBurst = getObjectFromGUID(state.gateBurst)
     monsterDeck = getObjectFromGUID(state.monsterDeck)
     eventDeck = getObjectFromGUID(state.eventDeck)
-  end
+    setupDone = state.setupDone
 
+    allObjects = getAllObjects()
+    setContextToTiles()
+    setContextToMonsters(allObjects)
+    setContextToDoom(allObjects)
+    setContextToAnomalies(allObjects)
+  end
 
   for i, scenarioBag in ipairs(scenarios) do
     zxc = scenarioBag
@@ -272,20 +280,7 @@ function buttonClick_place(scenarioBag)
   end
   
   unpackBag(scenarioBag)
-
-  for i,o in ipairs(neighborhoodTiles) do
-    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
-    o.addContextMenuItem('Draw encounter', func)
-
-    local func = function(player_color) getObjectFromGUID('0f8883').call('spawnAnomaly', {player_color, i, o}) end
-    o.addContextMenuItem('Spawn anomaly', func)
-  end
-
-  for i,o in ipairs(streetTiles) do
-    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
-    o.addContextMenuItem('Draw encounter', func)
-  end
-  
+  setContextToTiles()
 
   getObjectFromGUID('3fe222').call('removeInvestigatorsSelectButtons')
 
@@ -311,6 +306,7 @@ function buttonClick_place(scenarioBag)
   Wait.frames(
     function()
       selectDifficulty()
+      setupDone = true
     end, 512
   )
 
@@ -352,7 +348,7 @@ function unpackBag(scenarioBag)
                 
                 if item.hasTag('Neighborhood Deck') then table.insert(neighborhoodDecks, item) end
                 if item.hasTag('Neighborhood Tile') then table.insert(neighborhoodTiles, item) end
-                if item.hasTag('Street') then table.insert(streetTiles, item) end
+                if item.hasTag('Street Tile') then table.insert(streetTiles, item) end
                 if item.hasTag('Anomalies') then anomaliesDeck = item end
 
                 if item.hasTag('Read Headlines') then readHeadlinesToken = item end
@@ -361,8 +357,8 @@ function unpackBag(scenarioBag)
                 if item.hasTag('Spawn Monster') then spawnMonster = item end
                 if item.hasTag('Gate Burst') then gateBurst = item end
                 
-                if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
-                if item.getName() == 'Event' then eventDeck = getObjectFromGUID(item.getGUID()) end
+                if item.hasTag('Monster Deck') and item.hasTag('Setup') then monsterDeck = item end
+                if item.hasTag('Event Deck') then eventDeck = item end
                 break
               end
           end
@@ -479,4 +475,43 @@ function returnObj(tbl)
     t[i] = getObjectFromGUID(v)
   end
   return t
+end
+
+function setContextToTiles()
+  for i,o in ipairs(neighborhoodTiles) do
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
+    o.addContextMenuItem('Draw encounter', func)
+
+    local func = function(player_color) getObjectFromGUID('0f8883').call('spawnAnomaly', {player_color, i, o}) end
+    o.addContextMenuItem('Spawn anomaly', func)
+  end
+
+  for i,o in ipairs(streetTiles) do
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
+    o.addContextMenuItem('Draw encounter', func)
+  end
+end
+
+function setContextToMonsters(allObjects)
+  for _, obj in ipairs(allObjects) do
+    if obj.hasTag('Monsters') then
+      spawnMonster.call('setContextToMonster', obj)
+    end
+  end
+end
+
+function setContextToDoom()
+  for _, obj in ipairs(allObjects) do
+    if obj.hasTag('Doom') then
+      getObjectFromGUID('077454').call('addContextMenu', obj)
+    end
+  end
+end
+
+function setContextToAnomalies()
+  for _, obj in ipairs(allObjects) do
+    if obj.hasTag('Anomaly') then
+      getObjectFromGUID('0f8883').call('addContextMenu', obj)
+    end
+  end
 end

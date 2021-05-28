@@ -1,4 +1,3 @@
-selected = true
 investigatorsObj = getObjectFromGUID('69581b')
 selectedInvestigators = {}
 investigators = {
@@ -7,7 +6,16 @@ investigators = {
   getObjectFromGUID('ff211a')
 }
 
-function onLoad()
+function onSave()
+  local state = {
+    selectedInvestigators = returnSelectedInvestigatorGuid()
+  }
+  return JSON.encode(state)
+end
+
+function onLoad(script_state)
+  state = JSON.decode(script_state)
+
   for index, investigator in ipairs(investigators) do
     local investigator = investigator
     name = investigator.getName()
@@ -23,7 +31,13 @@ function onLoad()
     local func = function(player_color) setStatus('Orange', investigator) end
     investigator.addContextMenuItem('Cursed', func)
   end
-  
+
+  if state ~= nil then
+    for _, selectedInvestigatorGuid in ipairs(state.selectedInvestigators) do
+      table.insert(selectedInvestigators, getObjectFromGUID(selectedInvestigatorGuid))
+      getObjectFromGUID(selectedInvestigatorGuid).clearButtons()
+    end
+  end
 end
 
 function click_func(obj, player_clicker_color, alt_click)
@@ -62,4 +76,12 @@ function resetBtn(id)
       setSelectBtn(investigator)
     end
   end
+end
+
+function returnSelectedInvestigatorGuid()
+  local t = {}
+  for i, investigator in ipairs(selectedInvestigators) do
+    t[i] = investigator.guid
+  end
+  return t
 end
