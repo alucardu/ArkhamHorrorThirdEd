@@ -361,8 +361,8 @@ function unpackBag(scenarioBag)
                 if item.hasTag('Spawn Monster') then spawnMonster = item end
                 if item.hasTag('Gate Burst') then gateBurst = item end
                 
-                if item.getName() == 'Monsters' then monsterDeck = getObjectFromGUID(item.getGUID()) end
-                if item.getName() == 'Event' then eventDeck = getObjectFromGUID(item.getGUID()) end
+                if item.hasTag('Monster Deck') and item.hasTag('Setup') then monsterDeck = item end
+                if item.hasTag('Event Deck') then eventDeck = item end
                 break
               end
           end
