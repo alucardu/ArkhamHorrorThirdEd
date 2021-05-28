@@ -19,7 +19,7 @@ function drawNeighborhoodEncounter(obj)
       encounterCard = deck.takeObject()
       encounterCard.deal(1, obj[1])
 
-      if deck.getTags()[1] ~= 'Street' and encounterCard.hasTag('Event') then
+      if deck.getTags()[1] ~= 'Street Tile' and encounterCard.hasTag('Event') then
         local func = function(player_color) eventSuccess(player_color, i, encounterCard, deck) end
         encounterCard.addContextMenuItem('Event success', func)
 
