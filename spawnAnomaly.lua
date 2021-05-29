@@ -4,7 +4,6 @@ function spawnAnomaly(anomalyToken)
        position={x=anomalyToken[3].getPosition().x,y=anomalyToken[3].getPosition().y + 2,z=anomalyToken[3].getPosition().z}
      })
      anomalyToken.addTag('Anomaly')
-     print(anomalyToken)
   end
 
   addContextMenu(anomalyToken)

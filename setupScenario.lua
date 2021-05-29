@@ -1,12 +1,28 @@
 scenarios = {
   getObjectFromGUID('d14543'),
   getObjectFromGUID('a4853a'),
+  getObjectFromGUID('8ab878'),
+}
+
+neighborhoodTags = {
+  'Rivertown',
+  'Downtown',
+  'Northside',
+  'Easttown',
+  'Merchant District',
+  'Miskatonic University',
+  'Uptown',
+  'Southside',
+  'Innsmouth Shore',
+  'Innsmouth Village',
+  'Kingsport Harbor',
+  'Central Kingsport'
 }
 
 neighborhoodDecks = {}
 neighborhoodTiles = {}
 streetTiles= {}
-anomaliesDeck = {}
+anomaliesDeck = nil
 monsterDeck = {}
 eventDeck = {}
 setupDone = false
@@ -18,7 +34,7 @@ function onSave()
       neighborhoodTiles = returnGuid(neighborhoodTiles),
       streetTiles = returnGuid(streetTiles),
       readHeadlinesToken = readHeadlinesToken.guid,
-      anomaliesDeck = anomaliesDeck.guid,
+      anomaliesDeck = anomaliesDeck ~= nil and anomaliesDeck.guid or nil,
       spawnClue = spawnClue.guid,
       spawnMonster = spawnMonster.guid,
       gateBurst = gateBurst.guid,
@@ -37,14 +53,13 @@ function updateSave(scenarioBag)
 end
 
 function onLoad(script_state)
-
   local state = JSON.decode(script_state)
   if state ~= nil then
     neighborhoodDecks = returnObj(state.neighborhoodDecks)
     neighborhoodTiles = returnObj(state.neighborhoodTiles)
     streetTiles = returnObj(state.streetTiles)
     readHeadlinesToken = getObjectFromGUID(state.readHeadlinesToken)
-    anomaliesDeck = getObjectFromGUID(state.anomaliesDeck)
+    anomaliesDeck = anomaliesDeck ~= nil or getObjectFromGUID(state.anomaliesDeck)
     spawnClue = getObjectFromGUID(state.spawnClue)
     spawnMonster = getObjectFromGUID(state.spawnMonster)
     gateBurst = getObjectFromGUID(state.gateBurst)
@@ -373,7 +388,7 @@ function shuffleAllDecks()
     neighbordhoodDeck.shuffle()
   end
 
-  anomaliesDeck.shuffle()
+  if anomaliesDeck ~= nil then anomaliesDeck.shuffle() end
   monsterDeck.shuffle()
   eventDeck.shuffle()
 end
