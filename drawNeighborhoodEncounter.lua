@@ -1,13 +1,6 @@
-neighborhoodTags = {
-  'Rivertown',
-  'Downtown',
-  'Northside',
-  'Easttown',
-  'Merchant District',
-  'Miskatonic University',
-  'Uptown',
-  'Southside'
-}
+function onLoad()
+  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
+end
 
 function drawNeighborhoodEncounter(obj)
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
@@ -15,6 +8,8 @@ function drawNeighborhoodEncounter(obj)
   neighborhoodDecks = getObjectFromGUID('3e1179').getTable('neighborhoodDecks')
 
   for i, deck in ipairs(neighborhoodDecks) do
+    -- Street
+    print(returnNeighbordhoodTag(obj[3]))
     if deck.hasTag(returnNeighbordhoodTag(obj[3])) then
       deckPosition = deck.getPosition()
       

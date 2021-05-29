@@ -2,6 +2,7 @@ scenarios = {
   getObjectFromGUID('d14543'),
   getObjectFromGUID('a4853a'),
   getObjectFromGUID('8ab878'),
+  getObjectFromGUID('88f120'),
 }
 
 neighborhoodTags = {
@@ -16,7 +17,8 @@ neighborhoodTags = {
   'Innsmouth Shore',
   'Innsmouth Village',
   'Kingsport Harbor',
-  'Central Kingsport'
+  'Central Kingsport',
+  'Street Tile'
 }
 
 neighborhoodDecks = {}
@@ -357,7 +359,8 @@ function unpackBag(scenarioBag)
                   item.setPositionSmooth(
                     {
                       x=entry.pos.x,
-                      y=entry.pos.y + 5,z=entry.pos.z
+                      y=entry.pos.y + 5,
+                      z=entry.pos.z
                     })
                 end
 
