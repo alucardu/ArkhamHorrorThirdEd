@@ -16,14 +16,7 @@ function onLoad(script_state)
 
   doomTokenBag = getObjectFromGUID('f807c7')
 
-  neighborhoodTags = {
-    'Rivertown',
-    'Downtown',
-    'Northside',
-    'Easttown',
-    'Merchant District',
-    'Miskatonic University'
-  }
+  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
 end
 
 -- Called when a Doom token leaves the Doom token container

@@ -3,7 +3,32 @@ selectedInvestigators = {}
 investigators = {
   getObjectFromGUID('5244f1'),
   getObjectFromGUID('194c1c'),
-  getObjectFromGUID('ff211a')
+  getObjectFromGUID('ff211a'),
+  getObjectFromGUID('9dbafd'),
+  getObjectFromGUID('af51a0'),
+  getObjectFromGUID('feb6e8'),
+  getObjectFromGUID('e6eb6c'),
+  getObjectFromGUID('1fed60'),
+  getObjectFromGUID('df526b'),
+  getObjectFromGUID('346bd1'),
+  getObjectFromGUID('1b5201'),
+  getObjectFromGUID('c2f530'),
+  getObjectFromGUID('d0bac0'),
+  getObjectFromGUID('4f11c7'),
+  getObjectFromGUID('a7571c'),
+  getObjectFromGUID('ef1c34'),
+  getObjectFromGUID('7f71a1'),
+  getObjectFromGUID('751bda'),
+  getObjectFromGUID('d62fbd'),
+  getObjectFromGUID('09805b'),
+  getObjectFromGUID('1290e1'),
+  getObjectFromGUID('484db2'),
+  getObjectFromGUID('39f8ab'),
+  getObjectFromGUID('032906'),
+  getObjectFromGUID('4144e7'),
+  getObjectFromGUID('ac5d89'),
+  getObjectFromGUID('79e0ba'),
+  getObjectFromGUID('4f30e9')
 }
 
 function onSave()

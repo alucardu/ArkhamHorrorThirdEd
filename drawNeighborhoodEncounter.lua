@@ -4,7 +4,9 @@ neighborhoodTags = {
   'Northside',
   'Easttown',
   'Merchant District',
-  'Miskatonic University'
+  'Miskatonic University',
+  'Uptown',
+  'Southside'
 }
 
 function drawNeighborhoodEncounter(obj)

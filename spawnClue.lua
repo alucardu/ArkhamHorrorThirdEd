@@ -10,14 +10,7 @@ function onLoad()
   }
   self.createButton(params)
   
-  neighborhoodTags = {
-    'Rivertown',
-    'Downtown',
-    'Northside',
-    'Easttown',
-    'Merchant District',
-    'Miskatonic University'
-  }
+  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
 
   iterations = 0
 
