@@ -2,6 +2,10 @@ scenarios = {
   getObjectFromGUID('d14543'),
   getObjectFromGUID('a4853a'),
   getObjectFromGUID('8ab878'),
+  getObjectFromGUID('88f120'),
+  getObjectFromGUID('c73dd8'),
+  getObjectFromGUID('1de1e0'),
+  getObjectFromGUID('ba40c5'),
 }
 
 neighborhoodTags = {
@@ -16,31 +20,40 @@ neighborhoodTags = {
   'Innsmouth Shore',
   'Innsmouth Village',
   'Kingsport Harbor',
-  'Central Kingsport'
+  'Central Kingsport',
+  'Street Tile',
+  'Travel Route',
+  'Devil Reef'
 }
 
 neighborhoodDecks = {}
 neighborhoodTiles = {}
+travelRoutes = nil
 streetTiles= {}
 anomaliesDeck = nil
 monsterDeck = {}
 eventDeck = {}
 setupDone = false
+devilReefTile = {}
+terrorDeck = nil
 
 function onSave()
   if #neighborhoodDecks > 0 then
     local state = {
-      neighborhoodDecks = returnGuid(neighborhoodDecks),
-      neighborhoodTiles = returnGuid(neighborhoodTiles),
-      streetTiles = returnGuid(streetTiles),
-      readHeadlinesToken = readHeadlinesToken.guid,
-      anomaliesDeck = anomaliesDeck ~= nil and anomaliesDeck.guid or nil,
-      spawnClue = spawnClue.guid,
-      spawnMonster = spawnMonster.guid,
-      gateBurst = gateBurst.guid,
-      monsterDeck = monsterDeck.guid,
-      eventDeck = eventDeck.guid,
-      setupDone = setupDone
+        neighborhoodDecks = returnGuid(neighborhoodDecks),
+        neighborhoodTiles = returnGuid(neighborhoodTiles),
+        streetTiles = returnGuid(streetTiles),
+        readHeadlinesToken = readHeadlinesToken.guid,
+        anomaliesDeck = anomaliesDeck ~= nil and anomaliesDeck.guid or nil,
+        spawnClue = spawnClue.guid,
+        spawnMonster = spawnMonster.guid,
+        gateBurst = gateBurst.guid,
+        monsterDeck = monsterDeck.guid,
+        eventDeck = eventDeck.guid,
+        setupDone = setupDone,
+        travelRoutes = travelRoutes ~= nil and returnGuid(travelRoutes) or nil,
+        terrorDeck = terrorDeck ~= nil and  returnGuid(terrorDeck) or nil,
+        devilReefTile = devilReefTile ~= nil and  devilReefTile.guid or nil,
     }
     return JSON.encode(state)
   end
@@ -66,6 +79,9 @@ function onLoad(script_state)
     monsterDeck = getObjectFromGUID(state.monsterDeck)
     eventDeck = getObjectFromGUID(state.eventDeck)
     setupDone = state.setupDone
+    travelRoutes = state.travelRoutes ~= nil and returnObj(state.travelRoutes) or {}
+    devilReefTile = getObjectFromGUID(state.devilReefTile)
+    terrorDeck = terrorDeck ~= nil and returnObj(state.terrorDeck) or {}
 
     allObjects = getAllObjects()
     setContextToTiles()
@@ -357,17 +373,20 @@ function unpackBag(scenarioBag)
                   item.setPositionSmooth(
                     {
                       x=entry.pos.x,
-                      y=entry.pos.y + 5,z=entry.pos.z
+                      y=entry.pos.y + 5,
+                      z=entry.pos.z
                     })
                 end
 
-                Wait.condition(function() item.setLock(entry.lock) end, || item.resting)
-                
+                Wait.condition(function() item.setLock(entry.lock) end, || item.resting)                
                 if item.hasTag('Neighborhood Deck') then table.insert(neighborhoodDecks, item) end
                 if item.hasTag('Neighborhood Tile') then table.insert(neighborhoodTiles, item) end
                 if item.hasTag('Street Tile') then table.insert(streetTiles, item) end
-                if item.hasTag('Anomalies') then anomaliesDeck = item end
+                if item.hasTag('Travel Route Tile') then table.insert(travelRoutes, item) end
+                if item.hasTag('Devil Reef Tile') then devilReefTile = item end
 
+                if item.hasTag('Anomalies') then anomaliesDeck = item end
+                if item.hasTag('Terror Deck') then terrorDeck = item end
                 if item.hasTag('Read Headlines') then readHeadlinesToken = item end
                 if item.hasTag('Mythos Cup') then mythosCup = item end
                 if item.hasTag('Spawn Clue') then spawnClue = item end
@@ -506,6 +525,16 @@ function setContextToTiles()
   for i,o in ipairs(streetTiles) do
     local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
     o.addContextMenuItem('Draw encounter', func)
+  end
+
+  for i,o in ipairs(travelRoutes) do
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
+    o.addContextMenuItem('Draw encounter', func)
+  end
+
+  if devilReefTile ~= nil then
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, devilReefTile}) end
+    devilReefTile.addContextMenuItem('Draw encounter', func)
   end
 end
 

@@ -160,6 +160,7 @@ end
 function getValues(tokens)
   local t = {}
   for i, token in ipairs(tokens) do
+    -- print(token)
     t[i] = {token, getObjectFromGUID(token).getVar('value')}
   end
   return t

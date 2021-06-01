@@ -1,13 +1,6 @@
-neighborhoodTags = {
-  'Rivertown',
-  'Downtown',
-  'Northside',
-  'Easttown',
-  'Merchant District',
-  'Miskatonic University',
-  'Uptown',
-  'Southside'
-}
+function onLoad()
+  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
+end
 
 function drawNeighborhoodEncounter(obj)
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
@@ -56,9 +49,11 @@ end
 function eventFailed(player_color, i, encounterCard, deck)
   selection = deck.cut(2)
 
-  selection[2].setPositionSmooth(
-    {x = deckPosition.x, y = deckPosition.y, z = deckPosition.z + - 5}
-  )
+  selection[2].setPositionSmooth({
+    x = deckPosition.x,
+    y = deckPosition.y,
+    z = deckPosition.z + - 5
+  })
   selection[2].setRotationSmooth(
     {180, 0, 0}
   )
@@ -69,9 +64,14 @@ function eventFailed(player_color, i, encounterCard, deck)
 end
 
 function encounter(player_color, i, encounterCard, deck)
-  encounterCard.flip()
-  encounterCard.setPosition({x=deckPosition.x, y=deckPosition.y, z=deckPosition.z - 5})
-  encounterCard.setPositionSmooth({x=deckPosition.x, y=deckPosition.y - 0.1, z=deckPosition.z})
+  encounterCard.setPosition({
+    x=deckPosition.x,
+    y=deckPosition.y,
+    z=deckPosition.z - 5
+  })
+  Wait.condition(
+  function() encounterCard.flip() deck.putObject(encounterCard) end
+    , || not encounterCard.isSmoothMoving() and encounterCard.resting)
   broadcastToAll('Returned encounter card to the bottom of the encounter deck', {1, 1, 1})
 end
 
