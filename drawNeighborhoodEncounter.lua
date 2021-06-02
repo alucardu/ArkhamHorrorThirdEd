@@ -11,7 +11,7 @@ function drawNeighborhoodEncounter(obj)
     if deck.hasTag(returnNeighbordhoodTag(obj[3])) then
       deckPosition = deck.getPosition()
       
-      encounterCard = deck.takeObject()
+      local encounterCard = deck.takeObject()
       encounterCard.deal(1, obj[1])
 
       if deck.getTags()[1] ~= 'Street Tile' and encounterCard.hasTag('Event') then
@@ -48,6 +48,7 @@ end
 
 function eventFailed(player_color, i, encounterCard, deck)
   selection = deck.cut(2)
+  deckPosition = deck.getPosition()
 
   selection[2].setPositionSmooth({
     x = deckPosition.x,
@@ -64,6 +65,7 @@ function eventFailed(player_color, i, encounterCard, deck)
 end
 
 function encounter(player_color, i, encounterCard, deck)
+  deckPosition = deck.getPosition()
   encounterCard.setPosition({
     x=deckPosition.x,
     y=deckPosition.y,
