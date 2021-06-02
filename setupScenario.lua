@@ -6,6 +6,9 @@ scenarios = {
   getObjectFromGUID('c73dd8'),
   getObjectFromGUID('1de1e0'),
   getObjectFromGUID('ba40c5'),
+  getObjectFromGUID('786f08'),
+  getObjectFromGUID('0e6d75'),
+  getObjectFromGUID('8434b9'),
 }
 
 underDarkWaves = {
@@ -27,7 +30,8 @@ neighborhoodTags = {
   'Central Kingsport',
   'Street Tile',
   'Travel Route',
-  'Devil Reef'
+  'Devil Reef',
+  'Strange High House'
 }
 
 neighborhoodDecks = {}
@@ -39,6 +43,7 @@ monsterDeck = {}
 eventDeck = {}
 setupDone = false
 devilReefTile = {}
+highHouseTile = {}
 terrorDeck = nil
 
 function onSave()
@@ -58,6 +63,7 @@ function onSave()
         travelRoutes = travelRoutes ~= nil and returnGuid(travelRoutes) or nil,
         terrorDeck = terrorDeck ~= nil and terrorDeck.guid or nil,
         devilReefTile = devilReefTile ~= nil and  devilReefTile.guid or nil,
+        highHouseTile = highHouseTile ~= nil and  highHouseTile.guid or nil,
     }
     return JSON.encode(state)
   end
@@ -86,6 +92,7 @@ function onLoad(script_state)
     travelRoutes = state.travelRoutes ~= nil and returnObj(state.travelRoutes) or {}
     terrorDeck = state.terrorDeck
     devilReefTile = getObjectFromGUID(state.devilReefTile)
+    highHouseTile = getObjectFromGUID(state.highHouseTile)
 
     allObjects = getAllObjects()
     setContextToTiles()
@@ -388,6 +395,7 @@ function unpackBag(scenarioBag)
                 if item.hasTag('Street Tile') then table.insert(streetTiles, item) end
                 if item.hasTag('Travel Route Tile') then table.insert(travelRoutes, item) end
                 if item.hasTag('Devil Reef Tile') then devilReefTile = item end
+                if item.hasTag('Strange High House Tile') then strangeHighHouseTile = item end
 
                 if item.hasTag('Anomalies') then anomaliesDeck = item end
                 if item.hasTag('Terror Deck') then terrorDeck = item end
@@ -544,10 +552,14 @@ function setContextToTiles()
   end
 
   if devilReefTile ~= nil then
-    local func = function(player_color) getObjectFromGUID('69927e').call('spreadTerror', {player_color, i, devilReefTile}) end
-    devilReefTile.addContextMenuItem('Spread Terror', func)
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, devilReefTile}) end
+    devilReefTile.addContextMenuItem('Draw encounter', func)
   end
 
+  if strangeHighHouseTile ~= nil then
+    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, strangeHighHouseTile}) end
+    strangeHighHouseTile.addContextMenuItem('Draw encounter', func)
+  end
 
 end
 

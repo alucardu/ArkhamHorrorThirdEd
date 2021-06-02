@@ -1,6 +1,6 @@
 healthTokens = {
   '4d1c83',
-  '44d051',
+  '67b6ae',
   '2767a6',
   'ff446b',
   'e9e423',
@@ -160,7 +160,6 @@ end
 function getValues(tokens)
   local t = {}
   for i, token in ipairs(tokens) do
-    -- print(token)
     t[i] = {token, getObjectFromGUID(token).getVar('value')}
   end
   return t
@@ -168,6 +167,10 @@ end
 
 function setValues(tokens)
   for i, token in ipairs(tokens) do
-    getObjectFromGUID(token[1]).setVar('value', token[2])
+    if token[2] == nil then
+      getObjectFromGUID(token[1]).setVar('value', 0)
+      else
+      getObjectFromGUID(token[1]).setVar('value', token[2])
+    end
   end
 end

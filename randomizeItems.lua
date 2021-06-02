@@ -33,7 +33,7 @@ end
 function placeItems(iterations)
   for i = iterations, 1, -1 do
     frames = i*32
-    posX = 3
+    posX = 2.5
     Wait.frames(
       function()
         local itemCard = itemDeck.takeObject({
@@ -52,7 +52,7 @@ function placeItems(iterations)
             addButtonToItemCard(itemCard)
           end
         , || not itemCard.isSmoothMoving() and itemCard.resting)
-        posX = posX + 3
+        posX = posX + 2.5
 
       end, frames
     )
