@@ -8,6 +8,10 @@ scenarios = {
   getObjectFromGUID('ba40c5'),
 }
 
+underDarkWaves = {
+  'ba40c5'
+}
+
 neighborhoodTags = {
   'Rivertown',
   'Downtown',
@@ -52,7 +56,7 @@ function onSave()
         eventDeck = eventDeck.guid,
         setupDone = setupDone,
         travelRoutes = travelRoutes ~= nil and returnGuid(travelRoutes) or nil,
-        terrorDeck = terrorDeck ~= nil and  returnGuid(terrorDeck) or nil,
+        terrorDeck = terrorDeck ~= nil and terrorDeck.guid or nil,
         devilReefTile = devilReefTile ~= nil and  devilReefTile.guid or nil,
     }
     return JSON.encode(state)
@@ -80,8 +84,8 @@ function onLoad(script_state)
     eventDeck = getObjectFromGUID(state.eventDeck)
     setupDone = state.setupDone
     travelRoutes = state.travelRoutes ~= nil and returnObj(state.travelRoutes) or {}
+    terrorDeck = state.terrorDeck
     devilReefTile = getObjectFromGUID(state.devilReefTile)
-    terrorDeck = terrorDeck ~= nil and returnObj(state.terrorDeck) or {}
 
     allObjects = getAllObjects()
     setContextToTiles()
@@ -518,8 +522,15 @@ function setContextToTiles()
     local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
     o.addContextMenuItem('Draw encounter', func)
 
-    local func = function(player_color) getObjectFromGUID('0f8883').call('spawnAnomaly', {player_color, i, o}) end
-    o.addContextMenuItem('Spawn anomaly', func)
+    if anomaliesDeck ~= nil then
+      local func = function(player_color) getObjectFromGUID('0f8883').call('spawnAnomaly', {player_color, i, o}) end
+      o.addContextMenuItem('Spawn anomaly', func)
+    end
+
+    if terrorDeck ~= nil then
+      local func = function(player_color) getObjectFromGUID('69927e').call('spreadTerror', {player_color, i, o}) end
+      o.addContextMenuItem('Trigger terror', func)
+    end
   end
 
   for i,o in ipairs(streetTiles) do
@@ -533,9 +544,11 @@ function setContextToTiles()
   end
 
   if devilReefTile ~= nil then
-    local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, devilReefTile}) end
-    devilReefTile.addContextMenuItem('Draw encounter', func)
+    local func = function(player_color) getObjectFromGUID('69927e').call('spreadTerror', {player_color, i, devilReefTile}) end
+    devilReefTile.addContextMenuItem('Spread Terror', func)
   end
+
+
 end
 
 function setContextToMonsters(allObjects)

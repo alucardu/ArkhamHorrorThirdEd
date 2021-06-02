@@ -87,7 +87,7 @@ function draw_mythos_token()
   if takenObject.hasTag('Doom') then getObjectFromGUID('077454').call('spreadDoom') end
   if takenObject.hasTag('Blank') then getObjectFromGUID('50363f').call('blank') end
   if takenObject.hasTag('Reckoning') then getObjectFromGUID('432f00').call('reckoning') end 
-  if takenObject.hasTag('Spread Terror') then getObjectFromGUID('02db23').call('spreadTerror') end
+  if takenObject.hasTag('Spread Terror') then getObjectFromGUID('69927e').call('mythosTerror') end
 
   if takenObject.hasTag('Read Headlines') then scenarioSetup.getVar('readHeadlinesToken').call('readHeadline') end
   if takenObject.hasTag('Spawn Monster') then scenarioSetup.getVar('spawnMonster').call('spawnMonster') end
