@@ -1,11 +1,22 @@
 function onLoad(script_state)
-
   local state = JSON.decode(script_state)
   setupDone = getObjectFromGUID('3e1179').getVar('setupDone')
   if setupDone == true then
     headlinesDeck = getObjectFromGUID(state.headlinesDeck)
     headlinesDeckPos = headlinesDeck.getPosition()
   end
+
+  local params = {
+    click_function="readHeadline",
+    tooltip="Read Headline",
+    function_owner = self,
+    height=1250,
+    width=1250,
+    color={0, 0, 0, 0},
+    position={0, 0.1, 0}
+  }
+  self.createButton(params)
+
 end
 
 function onSave()

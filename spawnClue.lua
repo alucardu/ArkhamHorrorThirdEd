@@ -10,13 +10,13 @@ function onLoad()
   }
   self.createButton(params)
   
-  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
-
   iterations = 0
 
 end
 
 function spawnClue()
+  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
+
   iterations = iterations + 1
   setData()
 

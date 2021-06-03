@@ -16,7 +16,17 @@ function onLoad(script_state)
 
   doomTokenBag = getObjectFromGUID('f807c7')
 
-  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
+  local params = {
+    click_function="spreadDoom",
+    tooltip="Spread Doom",
+    function_owner = self,
+    height=1250,
+    width=1250,
+    color={0, 0, 0, 0},
+    position={0, 0.1, 0}
+  }
+  self.createButton(params)
+
 end
 
 -- Called when a Doom token leaves the Doom token container
@@ -33,7 +43,7 @@ function spreadDoom(doomToken)
   eventDeckPos = eventDeck.getPosition()
 
   --Called from scenario setup steps or Mythos Cup
-  if doomToken == nil then
+  if doomToken == nil or doomToken == self then
     eventCard = returnEventCard()
 
     Wait.condition(
@@ -100,6 +110,7 @@ function returnEventCard()
 end
 
 function returnNeighborhoodTag(encounterCard)
+  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
   for _, neighborhoodTag in ipairs(neighborhoodTags) do
     if encounterCard.hasTag(neighborhoodTag) then 
       return neighborhoodTag
