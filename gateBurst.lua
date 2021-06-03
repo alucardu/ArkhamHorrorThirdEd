@@ -9,8 +9,6 @@ function onLoad()
     position={0, 0.1, 0}
   }
   self.createButton(params)
-
-  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
 end
 
 function gateBurst()
@@ -71,6 +69,7 @@ function placeDoomTokens(eventCard)
 end
 
 function returnNeighborhoodTag(eventCard)
+  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
   for _, neighborhoodTag in ipairs(neighborhoodTags) do
     if eventCard.hasTag(neighborhoodTag) then 
       return neighborhoodTag

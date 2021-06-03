@@ -1,10 +1,21 @@
 activeTerrorEvents = {}
 
 function onLoad()
-  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
+  local params = {
+    click_function="mythosTerror",
+    tooltip="Spread Terror",
+    function_owner = self,
+    height=1250,
+    width=1250,
+    color={0, 0, 0, 0},
+    position={0, 0.1, 0}
+  }
+  self.createButton(params)
 end
 
 function mythosTerror()
+  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
+
   eventDiscardDeck = getObjectFromGUID('077454').getVar('discardDeck')
   if eventDiscardDeck.getQuantity() < 0 then
     -- single event discard card
@@ -154,6 +165,7 @@ function spreadTerror(terror)
 end
 
 function drawTerrorEncounter(o)
+  print(self.guid)
   terrorDeck = getObjectFromGUID('3e1179').getVar('terrorDeck')
   player_color = o[1]
   o = o[3]
@@ -197,7 +209,7 @@ function drawTerrorEncounter(o)
 end
 
 function setTerrorContextToTile(o)
-  local func = function(player_color) getObjectFromGUID('69927e').call('drawTerrorEncounter', {player_color, i, o}) end
+  local func = function(player_color) self.call('drawTerrorEncounter', {player_color, i, o}) end
   o.addContextMenuItem('Terror Encounter', func)
 end
 
@@ -208,7 +220,7 @@ function setContext(player_color, i, o)
   local func = function(player_color) getObjectFromGUID('84ef85').call('drawNeighborhoodEncounter', {player_color, i, o}) end
   o.addContextMenuItem('Draw encounter', func)
 
-  local func = function(player_color) getObjectFromGUID('69927e').call('spreadTerror', {player_color, i, o}) end
+  local func = function(player_color) self.call('spreadTerror', {player_color, i, o}) end
   o.addContextMenuItem('Trigger terror', func)
 end
 
@@ -237,6 +249,8 @@ function encounter(player_color, i, encounterCard, deck)
 end
 
 function returnNeighbordhoodTag(neighborhoodTile)
+  neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
+
   for _, neighborhoodTag in ipairs(neighborhoodTags) do
     if neighborhoodTile.hasTag(neighborhoodTag) then return neighborhoodTag end
   end
@@ -265,6 +279,7 @@ function checkIfNeighborhoodAlreadyHasTerror(neighborhoodTag, terrorCard, neighb
 end
 
 function returnNeighborhoodDeck(neighborhoodTag)
+  neighborhoodDecks = getObjectFromGUID('3e1179').getTable('neighborhoodDecks')
   for _, deck in ipairs(neighborhoodDecks) do
     if deck.hasTag(neighborhoodTag)then
       return deck

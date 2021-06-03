@@ -59,11 +59,11 @@ function onSave()
         gateBurst = gateBurst.guid,
         monsterDeck = monsterDeck.guid,
         eventDeck = eventDeck.guid,
-        setupDone = setupDone,
         travelRoutes = travelRoutes ~= nil and returnGuid(travelRoutes) or nil,
         terrorDeck = terrorDeck ~= nil and terrorDeck.guid or nil,
         devilReefTile = devilReefTile ~= nil and  devilReefTile.guid or nil,
         highHouseTile = highHouseTile ~= nil and  highHouseTile.guid or nil,
+        setupDone = setupDone,
     }
     return JSON.encode(state)
   end
@@ -361,6 +361,14 @@ function selectDifficulty()
 end
 
 function unpackBag(scenarioBag)
+
+  readHeadlinesToken = getObjectFromGUID('e6b052')
+  spawnClue = getObjectFromGUID('6f6053')
+  spawnMonster = getObjectFromGUID('8fceae')
+  gateBurst = getObjectFromGUID('1eb030')
+  spreadTerror = getObjectFromGUID('3df97d')
+  print(spreadTerror)
+
   local bagObjList = scenarioBag.getObjects()
   for guid, entry in pairs(scenarioBag.getTable('memoryList')) do
       local obj = getObjectFromGUID(guid)
@@ -397,13 +405,10 @@ function unpackBag(scenarioBag)
                 if item.hasTag('Devil Reef Tile') then devilReefTile = item end
                 if item.hasTag('Strange High House Tile') then strangeHighHouseTile = item end
 
+                if item.hasTag('Mythos Cup') then mythosCup = item end
+
                 if item.hasTag('Anomalies') then anomaliesDeck = item end
                 if item.hasTag('Terror Deck') then terrorDeck = item end
-                if item.hasTag('Read Headlines') then readHeadlinesToken = item end
-                if item.hasTag('Mythos Cup') then mythosCup = item end
-                if item.hasTag('Spawn Clue') then spawnClue = item end
-                if item.hasTag('Spawn Monster') then spawnMonster = item end
-                if item.hasTag('Gate Burst') then gateBurst = item end
                 
                 if item.hasTag('Monster Deck') and item.hasTag('Setup') then monsterDeck = item end
                 if item.hasTag('Event Deck') then eventDeck = item end
