@@ -364,8 +364,7 @@ function toggleMonsterTurn(player, value, id)
   Wait.frames(
     function()
       if finished(monstersTable, 'true') == true then
-        UI.setAttribute('MonsterPhaseBtn', 'interactable', 'false')
-        UI.setAttribute('EncounterPhaseBtn', 'interactable', 'true')
+        finishMonsterPhase()
       end
     end,
     1
@@ -391,6 +390,7 @@ function toggleTurn(player, value, id)
 
         if monstersTable ~= nil and #monstersTable > 0 then
           UI.setAttribute('MonsterPhaseBtn', 'interactable', 'true')
+          broadcastToAll('~~~~~ Monster Phase ~~~~~', 'Purple')
           else
             broadcastToAll('No monsters in play. Going to the encounter phase!', {0, 1, 0})
             finishMonsterPhase()
@@ -415,16 +415,19 @@ end
 function finishMonsterPhase()
   UI.setAttribute('MonsterPhaseBtn', 'interactable', 'false')
   UI.setAttribute('EncounterPhaseBtn', 'interactable', 'true')
+  broadcastToAll('~~~~~ Encounter Phase ~~~~~', 'Purple')
 end
 
 function finishEncounterPhase()
   UI.setAttribute('EncounterPhaseBtn', 'interactable', 'false')
   UI.setAttribute('MythosPhaseBtn', 'interactable', 'true')
+  broadcastToAll('~~~~~ Mythos Phase ~~~~~', 'Purple')
 end
 
 function finishMythosPhase()
   UI.setAttribute('MythosPhaseBtn', 'interactable', 'false')
   UI.setAttribute('ActionPhaseBtn', 'interactable', 'true')
+  broadcastToAll('~~~~~ Action Phase ~~~~~', 'Purple')
 
   for index, value in ipairs(children) do
     UI.setAttribute(value.children[1].attributes.id, 'interactable', 'true')
