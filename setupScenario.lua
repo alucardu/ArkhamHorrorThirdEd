@@ -52,18 +52,19 @@ function onSave()
         neighborhoodDecks = returnGuid(neighborhoodDecks),
         neighborhoodTiles = returnGuid(neighborhoodTiles),
         streetTiles = returnGuid(streetTiles),
-        readHeadlinesToken = readHeadlinesToken.guid,
+
         anomaliesDeck = anomaliesDeck ~= nil and anomaliesDeck.guid or nil,
-        spawnClue = spawnClue.guid,
-        spawnMonster = spawnMonster.guid,
-        gateBurst = gateBurst.guid,
-        monsterDeck = monsterDeck.guid,
+        monsterDec = monsterDeck.guid,
         eventDeck = eventDeck.guid,
+
         travelRoutes = travelRoutes ~= nil and returnGuid(travelRoutes) or nil,
         terrorDeck = terrorDeck ~= nil and terrorDeck.guid or nil,
+        
         devilReefTile = devilReefTile ~= nil and  devilReefTile.guid or nil,
         highHouseTile = highHouseTile ~= nil and  highHouseTile.guid or nil,
+
         setupDone = setupDone,
+
     }
     return JSON.encode(state)
   end
@@ -81,18 +82,26 @@ function onLoad(script_state)
     neighborhoodDecks = returnObj(state.neighborhoodDecks)
     neighborhoodTiles = returnObj(state.neighborhoodTiles)
     streetTiles = returnObj(state.streetTiles)
-    readHeadlinesToken = getObjectFromGUID(state.readHeadlinesToken)
+
     anomaliesDeck = anomaliesDeck ~= nil or getObjectFromGUID(state.anomaliesDeck)
-    spawnClue = getObjectFromGUID(state.spawnClue)
-    spawnMonster = getObjectFromGUID(state.spawnMonster)
-    gateBurst = getObjectFromGUID(state.gateBurst)
     monsterDeck = getObjectFromGUID(state.monsterDeck)
     eventDeck = getObjectFromGUID(state.eventDeck)
-    setupDone = state.setupDone
+
     travelRoutes = state.travelRoutes ~= nil and returnObj(state.travelRoutes) or {}
-    terrorDeck = state.terrorDeck
+    terrorDeck = getObjectFromGUID(state.terrorDeck)
+
     devilReefTile = getObjectFromGUID(state.devilReefTile)
     highHouseTile = getObjectFromGUID(state.highHouseTile)
+
+    -- buttons
+    readHeadlines = getObjectFromGUID('e6b052')
+    spawnClue = getObjectFromGUID('6f6053')
+    spawnMonster = getObjectFromGUID('8fceae')
+    gateBurst = getObjectFromGUID('1eb030')
+    spreadTerror = getObjectFromGUID('3df97d')
+    spreadDoom = getObjectFromGUID('eaa6bd')
+
+    setupDone = state.setupDone
 
     allObjects = getAllObjects()
     setContextToTiles()
@@ -349,7 +358,7 @@ function buttonClick_place(scenarioBag)
     function()
       selectDifficulty()
       getObjectFromGUID('1b9f8c').call('placeItems', 5)
-      readHeadlinesToken.call('setHeadlines', readHeadlinesToken.getDescription())
+      readHeadlines.call('setHeadlines', readHeadlines.getDescription())
       setupDone = true
     end, 512
   )
@@ -361,13 +370,6 @@ function selectDifficulty()
 end
 
 function unpackBag(scenarioBag)
-
-  readHeadlinesToken = getObjectFromGUID('e6b052')
-  spawnClue = getObjectFromGUID('6f6053')
-  spawnMonster = getObjectFromGUID('8fceae')
-  gateBurst = getObjectFromGUID('1eb030')
-  spreadTerror = getObjectFromGUID('3df97d')
-  spreadDoom = getObjectFromGUID('eaa6bd')
 
   local bagObjList = scenarioBag.getObjects()
   for guid, entry in pairs(scenarioBag.getTable('memoryList')) do
@@ -541,7 +543,7 @@ function setContextToTiles()
     end
 
     if terrorDeck ~= nil then
-      local func = function(player_color) getObjectFromGUID('69927e').call('spreadTerror', {player_color, i, o}) end
+      local func = function(player_color) getObjectFromGUID('3df97d').call('spreadTerror', {player_color, i, o}) end
       o.addContextMenuItem('Trigger terror', func)
     end
   end
