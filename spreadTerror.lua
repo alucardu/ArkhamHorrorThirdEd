@@ -16,7 +16,7 @@ end
 function mythosTerror()
   neighborhoodTags = getObjectFromGUID('3e1179').getTable('neighborhoodTags')
 
-  eventDiscardDeck = getObjectFromGUID('077454').getVar('discardDeck')
+  eventDiscardDeck = getObjectFromGUID('eaa6bd').getVar('discardDeck')
   if eventDiscardDeck.getQuantity() < 0 then
     -- single event discard card
     for _, neighborhoodTag in ipairs(neighborhoodTags) do
@@ -165,7 +165,6 @@ function spreadTerror(terror)
 end
 
 function drawTerrorEncounter(o)
-  print(self.guid)
   terrorDeck = getObjectFromGUID('3e1179').getVar('terrorDeck')
   player_color = o[1]
   o = o[3]

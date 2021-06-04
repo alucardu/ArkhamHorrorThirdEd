@@ -14,7 +14,7 @@ end
 function gateBurst()
   eventDeck = getObjectFromGUID('3e1179').getVar('eventDeck')
   eventDeckPos = eventDeck.getPosition()
-  discardDeck = getObjectFromGUID('077454').getVar('discardDeck')
+  discardDeck = getObjectFromGUID('eaa6bd').getVar('discardDeck')
   neighborhoodTiles = getObjectFromGUID('3e1179').getTable('neighborhoodTiles')
 
   local eventCard = eventDeck.takeObject()

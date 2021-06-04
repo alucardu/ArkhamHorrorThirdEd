@@ -32,15 +32,15 @@ function drawNeighborhoodEncounter(obj)
 end
 
 function eventSuccess(player_color, i, encounterCard, deck)
-  discardDeck = getObjectFromGUID('077454').getVar('discardDeck')
+  discardDeck = getObjectFromGUID('eaa6bd').getVar('discardDeck')
 
   if discardDeck == nil then
     print('Event discard deck is empty')
     eventDiscardPos = {x = eventDeckPos.x + 4, y = eventDeckPos.y, z = eventDeckPos.z}
     encounterCard.setPosition(eventDiscardPos)
-    getObjectFromGUID('077454').setVar('discardDeck', encounterCard)
+    getObjectFromGUID('eaa6bd').setVar('discardDeck', encounterCard)
     else 
-      getObjectFromGUID('077454').setVar('discardDeck', discardDeck.putObject(encounterCard))
+      getObjectFromGUID('eaa6bd').setVar('discardDeck', discardDeck.putObject(encounterCard))
   end
   broadcastToAll('Returned encounter card to the event discard pile', {1, 1, 1})
 

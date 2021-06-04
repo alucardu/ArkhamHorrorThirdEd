@@ -315,7 +315,7 @@ function buttonClick_place(scenarioBag)
     if object.hasTag('Doom') and object.hasTag('setup') then
       Wait.frames(
         function()
-          getObjectFromGUID('077454').call('spreadDoom', object) 
+          getObjectFromGUID('eaa6bd').call('spreadDoom', object) 
         end, 64 
       )
     end
@@ -341,7 +341,7 @@ function buttonClick_place(scenarioBag)
 
   Wait.frames(
     function()
-      getObjectFromGUID('077454').call('spreadDoom')
+      getObjectFromGUID('eaa6bd').call('spreadDoom')
     end, 96
   )
 
@@ -367,7 +367,7 @@ function unpackBag(scenarioBag)
   spawnMonster = getObjectFromGUID('8fceae')
   gateBurst = getObjectFromGUID('1eb030')
   spreadTerror = getObjectFromGUID('3df97d')
-  print(spreadTerror)
+  spreadDoom = getObjectFromGUID('eaa6bd')
 
   local bagObjList = scenarioBag.getObjects()
   for guid, entry in pairs(scenarioBag.getTable('memoryList')) do
@@ -579,7 +579,7 @@ end
 function setContextToDoom()
   for _, obj in ipairs(allObjects) do
     if obj.hasTag('Doom') then
-      getObjectFromGUID('077454').call('addContextMenu', obj)
+      getObjectFromGUID('eaa6bd').call('addContextMenu', obj)
     end
   end
 end
