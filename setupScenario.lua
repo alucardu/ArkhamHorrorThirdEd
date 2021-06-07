@@ -54,14 +54,14 @@ function onSave()
         streetTiles = returnGuid(streetTiles),
 
         anomaliesDeck = anomaliesDeck ~= nil and anomaliesDeck.guid or nil,
-        monsterDec = monsterDeck.guid,
+        monsterDeck = monsterDeck.guid,
         eventDeck = eventDeck.guid,
 
         travelRoutes = travelRoutes ~= nil and returnGuid(travelRoutes) or nil,
-        terrorDeck = terrorDeck ~= nil and terrorDeck.guid or nil,
+        terrorDeck = terrorDeck ~= null and terrorDeck.guid or null,
         
-        devilReefTile = devilReefTile ~= nil and  devilReefTile.guid or nil,
-        highHouseTile = highHouseTile ~= nil and  highHouseTile.guid or nil,
+        devilReefTile = devilReefTile ~= nil and devilReefTile.guid or nil,
+        highHouseTile = highHouseTile ~= nil and highHouseTile.guid or nil,
 
         setupDone = setupDone,
 
@@ -84,6 +84,7 @@ function onLoad(script_state)
     streetTiles = returnObj(state.streetTiles)
 
     anomaliesDeck = anomaliesDeck ~= nil or getObjectFromGUID(state.anomaliesDeck)
+
     monsterDeck = getObjectFromGUID(state.monsterDeck)
     eventDeck = getObjectFromGUID(state.eventDeck)
 
@@ -108,6 +109,7 @@ function onLoad(script_state)
     setContextToMonsters(allObjects)
     setContextToDoom(allObjects)
     setContextToAnomalies(allObjects)
+    setData()
   end
 
   for i, scenarioBag in ipairs(scenarios) do
@@ -359,6 +361,7 @@ function buttonClick_place(scenarioBag)
       selectDifficulty()
       getObjectFromGUID('1b9f8c').call('placeItems', 5)
       readHeadlines.call('setHeadlines', readHeadlines.getDescription())
+      setData()
       setupDone = true
     end, 512
   )
@@ -543,7 +546,7 @@ function setContextToTiles()
     end
 
     if terrorDeck ~= nil then
-      local func = function(player_color) getObjectFromGUID('3df97d').call('spreadTerror', {player_color, i, o}) end
+      local func = function(player_color) spreadTerror.call('spreadTerror', {player_color, i, o}) end
       o.addContextMenuItem('Trigger terror', func)
     end
   end
@@ -591,5 +594,11 @@ function setContextToAnomalies()
     if obj.hasTag('Anomaly') then
       getObjectFromGUID('0f8883').call('addContextMenu', obj)
     end
+  end
+end
+
+function setData()
+  if terrorDeck ~= nil then
+    spreadTerror.call('setData', {terrorDeck, neighborhoodTags, neighborhoodDecks})
   end
 end
