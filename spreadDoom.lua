@@ -54,6 +54,8 @@ function spreadDoom(doomToken)
     neighborhoodTag = returnNeighborhoodTag(eventCard)
     neighborhoodTilePosition = returnNeighborhoodTile(neighborhoodTag).getPosition()
 
+    getObjectFromGUID('3e1179').setVar('unstableSpace', neighborhoodTag)
+
     iteration = 1
     if eventCard.hasTag('Number of Doom 2') then
       iteration = 2
