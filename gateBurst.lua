@@ -39,6 +39,8 @@ function gateBurst()
   end
 
   placeDoomTokens(eventCard)
+  originalUnstablePlace = getObjectFromGUID('3e1179').getVar('originalUnstableSpace')
+  getObjectFromGUID('3e1179').setVar('unstableSpace', originalUnstablePlace)
 
 end
 

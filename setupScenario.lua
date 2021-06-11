@@ -11,10 +11,6 @@ scenarios = {
   getObjectFromGUID('8434b9'),
 }
 
-underDarkWaves = {
-  'ba40c5'
-}
-
 neighborhoodTags = {
   'Rivertown',
   'Downtown',
@@ -128,7 +124,7 @@ function onLoad(script_state)
     if next(memoryList) == nil then
       createSetupButton()
     else
-      createMemoryActionButtons(zxc)
+      createMemoryActionButtons(zxc, i)
     end
   end
 end
@@ -282,12 +278,9 @@ function buttonClick_reset()
     updateSave(scenarioBag)
 end
 
-
 --After Setup
-
-
 --Creates recall and place buttons
-function createMemoryActionButtons(zxc)
+function createMemoryActionButtons(zxc, i)
   zxc.createButton({
     label="Place", click_function="buttonClick_place", function_owner=self,
     position={0,0.3,-2}, rotation={0,180,0}, height=350, width=800,
@@ -302,6 +295,8 @@ end
 
 --Sends objects from bag/table to their saved position/rotation
 function buttonClick_place(scenarioBag)
+  originalUnstableSpace = scenarioBag.getDescription()
+  unstableSpace = originalUnstableSpace
 
   for i, button in ipairs(scenarioBag.getButtons()) do
     if button.label == 'Place' then
