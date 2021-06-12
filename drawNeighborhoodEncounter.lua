@@ -32,6 +32,9 @@ function drawNeighborhoodEncounter(obj)
 end
 
 function eventSuccess(player_color, i, encounterCard, deck)
+
+  getObjectFromGUID('3e1179').setVar('unstableSpace', returnNeighbordhoodTag(deck))
+
   discardDeck = getObjectFromGUID('eaa6bd').getVar('discardDeck')
 
   if discardDeck == nil then
@@ -106,5 +109,11 @@ end
 function returnNeighbordhoodTag(encounterCard)
   for _, neighborhoodTag in ipairs(neighborhoodTags) do
     if encounterCard.hasTag(neighborhoodTag) then return neighborhoodTag end
+  end
+end
+
+function returnNeighborhoodTile(neighborhoodTag)
+  for _, tile in ipairs(neighborhoodTiles) do
+    if tile.hasTag(neighborhoodTag)then  return tile end
   end
 end
