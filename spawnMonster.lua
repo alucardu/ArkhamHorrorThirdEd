@@ -44,7 +44,14 @@ function defeatMonster(player_color, i, spawnedMonster)
   broadcastToAll(player_color .. ' has defeated ' .. spawnedMonster.getName(), {0, 1, 0})
 end
 
+function addRemnant(player_color, i, spawnedMonster)
+  getObjectFromGUID('752ff0').takeObject({position = spawnedMonster.getPosition() })
+end
+
 function setContextToMonster(spawnedMonster)
-    local func = function(player_color) defeatMonster(player_color, i, spawnedMonster) end
+  local func = function(player_color) defeatMonster(player_color, i, spawnedMonster) end
   spawnedMonster.addContextMenuItem('Defeat Monster', func)
+
+  local func = function(player_color) addRemnant(player_color, i, spawnedMonster) end
+  spawnedMonster.addContextMenuItem('Add remnant', func)
 end
